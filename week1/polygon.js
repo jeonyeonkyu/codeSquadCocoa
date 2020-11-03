@@ -37,7 +37,7 @@ class Polygon {
 
     printExecutionSequence(){
         console.log('●●●●●●●●●●계산수행순서●●●●●●●●●●●');
-        this.executionSequence.forEach((element, index) => console.log(`${index}번째. ${element}`));
+        this.executionSequence.forEach((element, index) => console.log(`${index+1}번째. ${element}`));
         console.log('●●●●●●●●●● 계산수행 끝 ●●●●●●●●●●●');
     }
 
