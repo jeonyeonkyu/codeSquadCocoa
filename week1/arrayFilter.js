@@ -1,8 +1,8 @@
+const regExpSpecial = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
+const regExpNum = /[0-9]/g;
 
 //for/while문을 사용한 버전 만들기
 const filterId_v1 = (peoples) => {
-    const regExpSpecial = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
-    const regExpNum = /[0-9]/g;
     const specialCharRemoveArr = [];
 
     for (let i = 0; i < peoples.length; i++) {
@@ -18,11 +18,7 @@ const filterId_v1 = (peoples) => {
 
 //forEach,filter, map등의 고차함수를 사용한 버전 만들기
 const filterId_v2 = (peoples) => {
-    const regExpSpecial = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
-    const regExpNum = /[0-9]/g;
-    const specialCharRemoveArr = [];
-
-    return peoples.filter((element) => !regExpSpecial.test(element)).map((element) => element.replace(regExpNum,''));
+    return peoples.filter((element) => !regExpSpecial.test(element)).map((element) => element.replace(regExpNum, ''));
 }
 
 
