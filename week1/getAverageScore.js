@@ -3,16 +3,18 @@
 // 각 학생의 평균점수(1)와 모든 학생의 최고점수의 평균점수(2)를 출력하라.
 
 const getAverageScore = (args) => {
-    const firstResult = [];
-    args.forEach((element) => firstResult.push(element.reduce((acc, cur) => acc + cur) / 3));
-    console.log(firstResult);
+    const average = args.map(([one, two, three]) => ((one + two + three) / 3));
+    const maxAverage = args.map((element) => (Math.max(...element))).reduce((acc, cur) => acc + cur) / args.length;
 
-    const maxAverage = [];
-    args.forEach((element) => maxAverage.push(Math.max(...element)));
-    const secondResult = maxAverage.reduce((acc, cur) => acc + cur) / args.length;
-    console.log(secondResult);
+    return {
+        average,
+        maxAverage
+    }
 }
 
-
 const grades = [[88, 76, 77], [33, 44, 44], [90, 100, 94], [30, 44, 98]];
-getAverageScore(grades);
+
+const {average, maxAverage} = getAverageScore(grades);
+
+console.log(average);
+console.log(maxAverage);
