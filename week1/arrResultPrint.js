@@ -1,6 +1,26 @@
 
 // type이 sk인, name으로 구성된 배열만 출력해본다.
-[{
+class ArrResultPrint {
+    constructor(){
+        this.arr = [];
+    }
+    nameIsSkFilterArr = (obj) => {
+        Object.keys(obj).forEach((key) => {
+            if (typeof obj[key] === 'object') {
+                this.nameIsSkFilterArr(obj[key]);
+            } else {
+                if (obj[key] === 'sk') {
+                    this.arr.push(obj.name);
+                }
+            }
+        });
+        return this.arr;
+    }
+}
+
+
+
+const data = [{
 	"id": 1,
 	"name": "Yong",
 	"phone": "010-0000-0000",
@@ -80,3 +100,6 @@
 		]
 	}]
 }]
+
+const result = new ArrResultPrint();
+console.log(result.nameIsSkFilterArr(data));
