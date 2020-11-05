@@ -14,7 +14,7 @@ const getAverageScore = (args) => {
 
 const grades = [[88, 76, 77], [33, 44, 44], [90, 100, 94], [30, 44, 98]];
 
-const {average, maxAverage} = getAverageScore(grades);
+const { average, maxAverage } = getAverageScore(grades);
 
 console.log(average);
 console.log(maxAverage);
