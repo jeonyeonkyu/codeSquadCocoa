@@ -7,3 +7,19 @@ const b = parseInt(input[1]);
 const solution = (A, B) => A + B;
 
 console.log(solution(a, b));
+
+// 이 코드도 동작함
+// const readline = require('readline');
+// const rl = readline.createInterface({
+//   input: process.stdin,
+//   output: process.stdout
+// });
+ 
+// let input = [];
+ 
+// rl.on('line', function (line) {
+//     input = line.split(' ').map((el) => parseInt(el));
+// }).on('close', function () {
+//     console.log(input[0] + input[1]);
+//     process.exit();
+// });
