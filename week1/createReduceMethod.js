@@ -11,10 +11,11 @@ const myReduce = (arr, callback, initialValue = 0) => {
 	}
 	let result = initialValue;
 	for (let index = 0; index < arr.length; index++) {
-		result = callback(acc = result, arr[index], index);
+		result = callback(result, arr[index], index);
 	}
 	return result;
 }
+
 const a = [1, 2, 3];
 
 const result1 = myReduce(a, (acc, cur, index) => acc + cur);
