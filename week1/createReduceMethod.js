@@ -22,20 +22,18 @@ const myReduce = (arr, callback, initialValue) => {
 	return accumulator;
 }
 
-//비교하는 구문
+//test1
 const a = [4, 2, 6, 1];
-const result1 = myReduce(a, (acc, cur) => acc + cur, 4);
-console.log('----------------------')
+const cumulativeToPlusElement = (a, b) => a + b;
+const result1 = myReduce(a, cumulativeToPlusElement, 4);
 console.log(result1);
-console.log('----------------------')
-console.log(a.reduce((acc, cur) => acc + cur, 4));
+console.log(a.reduce(cumulativeToPlusElement, 4));
 
-const result2 = myReduce(a, (acc, cur) => {
-	acc.push(cur);
+//test2
+const squaredElementToArr = (acc, cur) => {
+	acc.push(cur * cur);
 	return acc;
-}, []);
+}
+const result2 = myReduce(a, squaredElementToArr, []);
 console.log(result2);
-console.log(a.reduce((acc, cur) => {
-	acc.push(cur);
-	return acc;
-}, []))
+console.log(a.reduce(squaredElementToArr, []));
