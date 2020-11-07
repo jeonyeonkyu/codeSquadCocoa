@@ -38,4 +38,4 @@ console.log(result2);
 console.log(a.reduce((acc, cur) => {
 	acc.push(cur);
 	return acc;
-},[]))
+}, []))
