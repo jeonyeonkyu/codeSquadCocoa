@@ -5,24 +5,37 @@
 // }
 // const result = myReduce(arr, (next,prev) => {...}, []);
 
-const myReduce = (arr, callback, initialValue = 0) => {
+const myReduce = (arr, callback, initialValue) => {
 	if (!Array.isArray(arr)) {
 		throw new Error('is not array');
 	}
-	let result = initialValue;
-	for (let index = 0; index < arr.length; index++) {
-		result = callback(result, arr[index], index);
+	let arrIndex = 0;
+	if (initialValue === undefined) {
+		initialValue = arr[0];
+		arrIndex = 1;
 	}
-	return result;
+	let accumulator = initialValue;
+	for (let index = arrIndex; index < arr.length; index++) {
+		accumulator = callback(accumulator, arr[index], index);
+
+	}
+	return accumulator;
 }
 
-const a = [1, 2, 3];
-
-const result1 = myReduce(a, (acc, cur, index) => acc + cur);
+//비교하는 구문
+const a = [4, 2, 6, 1];
+const result1 = myReduce(a, (acc, cur) => acc + cur, 4);
+console.log('----------------------')
 console.log(result1);
+console.log('----------------------')
+console.log(a.reduce((acc, cur) => acc + cur, 4));
 
-const result2 = myReduce(a, (acc, cur, index) => {
+const result2 = myReduce(a, (acc, cur) => {
 	acc.push(cur);
 	return acc;
 }, []);
 console.log(result2);
+console.log(a.reduce((acc, cur) => {
+	acc.push(cur);
+	return acc;
+},[]))
