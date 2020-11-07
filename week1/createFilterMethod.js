@@ -13,4 +13,5 @@ const myFilter = (arr, fn) => {
   return result;
 }
 var a = [1, 2, 3];
-console.log(myFilter(a, (element, index) => element % 2 === 0));
+console.log(myFilter(a, (element, index) => element % 2 === 1));
+console.log(a.filter((element, index) => element % 2 === 1));
