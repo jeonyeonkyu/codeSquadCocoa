@@ -1,7 +1,7 @@
 // type이 sk인, name으로 구성된 배열만 출력해본다.
 const skNameO = require('./skNameO.js');
 
-class ArrResultPrint {
+class FindTypeToSk {
 	constructor() {
 		this.arr = [];
 	}
@@ -19,5 +19,5 @@ class ArrResultPrint {
 	}
 }
 
-const result = new ArrResultPrint();
+const result = new FindTypeToSk();
 console.log(result.nameIsSkFilterArr(skNameO));

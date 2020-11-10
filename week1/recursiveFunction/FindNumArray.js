@@ -1,7 +1,7 @@
 //숫자타입으로만 구성된 요소를 뽑아 배열만들기
 const o = require('./o.js')
 
-class CreateArray {
+class FindNumArray {
   constructor() {
     this.arr = [];
   }
@@ -19,5 +19,5 @@ class CreateArray {
   }
 }
 
-const createArray = new CreateArray();
-console.log(createArray.filteringNumberTypeToArr(o));
+const findNumArray = new FindNumArray();
+console.log(findNumArray.filteringNumberTypeToArr(o));
