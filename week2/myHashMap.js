@@ -61,13 +61,9 @@ class MyHashMap {
 
   // isEmpty() 비어있는 맵인지 Bool 결과를 리턴한다.
   isEmpty() {
-    let result = true;
-    for (let i = 0; i < this.index; i++) {
-      if (this.hashMap[i].length) {
-        result = false;
-      }
-    }
-    return result;
+     return this.hashMap.some((_, index) => {
+       return !this.hashMap[index].length;
+     });
   }
 
   // keys() 전체 키 목록을 [String] 배열로 리턴한다.
@@ -94,7 +90,7 @@ class MyHashMap {
   // size() 전체 아이템 개수를 리턴한다.
   size() {
     let size = 0;
-    this.hashMap.forEach((_, i) => {
+    this.hashMap.forEach((_,i) => {
       size += this.hashMap[i].length;
     })
     return size;
@@ -104,9 +100,13 @@ class MyHashMap {
   clear() {
     this.hashMap = Array.from({ length: this.index }, () => []);
   }
+
+  //중복되는 코드가 많아 해당키의 인덱스를 리턴하는 함수 만들기
+  
 }
 
 let test = new MyHashMap(3);
+console.log(test.isEmpty());
 test.put('b', 3);
 test.put('4', 5);
 console.log(test.keys());
@@ -114,14 +114,21 @@ test.clear();
 console.log(test.size());
 test.put('i', 333);
 test.put('i', 77777);
+test.put('q',33);
+test.put('d',33);
+test.put('7',33);
+test.put('1',33);
+test.put('2',33);
+test.put('3',33);
+test.put('4',33);
 console.log(test.size());
-test.put('c', 7);
 test.put('gg', 0);
 console.log(test.size());
+console.log(test.isEmpty());
 console.log(test.get('i'));
 test.replace('i', 'dddd');
 console.log(test.keys());
-
+console.log(test.isEmpty());
 //수정할 것 동일한 코드를 사용하는게 많아서 key값을 찾았을때 index를 리턴하는 함수 하나 만들기
 
 //추가하고 싶은것 효율을 올리기위해 {hit : 0} 이라는 속성을 줘서 호출될 때마다 hit를 증가시키고 
