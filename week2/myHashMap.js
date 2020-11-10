@@ -29,41 +29,29 @@ class MyHashMap {
 
   // remove(String key) 해당 키에 있는 값을 삭제한다.
   remove(key) {
-    const mapIndex = this.hashMap[this.getHashCode(key)];
-    for (let i = 0; i < mapIndex.length; i++) {
-      if (mapIndex[i].hasOwnProperty(key)) {
-        this.hashMap[this.getHashCode(key)].splice(i, 1);
-      }
-    }
+    const index = this.findIndex(key);
+    this.hashMap[this.getHashCode(key)].splice(index, 1);
   }
 
   // containsKey(String) 해당 키가 존재하는지 판단해서 Bool 결과를 리턴한다.
   containsKey(key) {
-    const mapIndex = this.hashMap[this.getHashCode(key)];
-    for (let i = 0; i < mapIndex.length; i++) {
-      if (mapIndex[i].hasOwnProperty(key)) {
-        return true;
-      }
-    }
-    return false;
+    const index = this.findIndex(key);
+    const result = index !== false ? true : false;
+    return result;
   }
 
   // get(String) 해당 키와 매치되는 값을 찾아서 리턴한다.
   get(key) {
-    const mapIndex = this.hashMap[this.getHashCode(key)];
-    for (let i = 0; i < mapIndex.length; i++) {
-      if (mapIndex[i].hasOwnProperty(key)) {
-        return mapIndex[i][key];
-      }
-    }
-    return '해당 키가 존재하지 않음';
+    const index = this.findIndex(key);
+    const result = index !== false ? this.hashMap[this.getHashCode(key)][index][key] : '해당 키가 존재하지 않음';
+    return result;
   }
 
   // isEmpty() 비어있는 맵인지 Bool 결과를 리턴한다.
   isEmpty() {
-     return this.hashMap.some((_, index) => {
-       return !this.hashMap[index].length;
-     });
+    return this.hashMap.some((_, index) => {
+      return !this.hashMap[index].length;
+    });
   }
 
   // keys() 전체 키 목록을 [String] 배열로 리턴한다.
@@ -90,7 +78,7 @@ class MyHashMap {
   // size() 전체 아이템 개수를 리턴한다.
   size() {
     let size = 0;
-    this.hashMap.forEach((_,i) => {
+    this.hashMap.forEach((_, i) => {
       size += this.hashMap[i].length;
     })
     return size;
@@ -102,7 +90,15 @@ class MyHashMap {
   }
 
   //중복되는 코드가 많아 해당키의 인덱스를 리턴하는 함수 만들기
-  
+  findIndex(key) {
+    const mapIndex = this.hashMap[this.getHashCode(key)];
+    for (let i = 0; i < mapIndex.length; i++) {
+      if (mapIndex[i].hasOwnProperty(key)) {
+        return i;
+      }
+    }
+    return false;
+  }
 }
 
 let test = new MyHashMap(3);
@@ -114,21 +110,26 @@ test.clear();
 console.log(test.size());
 test.put('i', 333);
 test.put('i', 77777);
-test.put('q',33);
-test.put('d',33);
-test.put('7',33);
-test.put('1',33);
-test.put('2',33);
-test.put('3',33);
-test.put('4',33);
+test.put('q', 33);
+test.put('d', 33);
+test.put('7', 33);
+test.put('1', 33);
+test.put('2', 33);
+test.put('3', 33);
+test.put('4', 33);
 console.log(test.size());
 test.put('gg', 0);
 console.log(test.size());
 console.log(test.isEmpty());
-console.log(test.get('i'));
+console.log(test.get('3'));
 test.replace('i', 'dddd');
 console.log(test.keys());
 console.log(test.isEmpty());
+console.log(test.containsKey('i'));
+console.log(test);
+test.remove('i');
+console.log(test);
+console.log(test.containsKey('i'));
 //수정할 것 동일한 코드를 사용하는게 많아서 key값을 찾았을때 index를 리턴하는 함수 하나 만들기
 
 //추가하고 싶은것 효율을 올리기위해 {hit : 0} 이라는 속성을 줘서 호출될 때마다 hit를 증가시키고 
