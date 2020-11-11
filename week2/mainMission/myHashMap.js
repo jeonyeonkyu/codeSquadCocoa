@@ -46,9 +46,7 @@ class MyHashMap {
   }
 
   isEmpty() { // isEmpty() 비어있는 맵인지 Bool 결과를 리턴한다.
-    return this.hashMap.some((_, index) => {
-      return !this.hashMap[index].length;
-    });
+    return !this.hashMap.some((_, index) => this.hashMap[index].length);
   }
 
   keys() { // keys() 전체 키 목록을 [String] 배열로 리턴한다.
@@ -108,6 +106,7 @@ console.log(test.keys());
 test.replace('a', 10);
 console.log(test.size());
 console.log(test.get('a'));
+console.log(test.isEmpty());
 
 test.clear();
 console.log(test.isEmpty());
