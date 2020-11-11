@@ -15,7 +15,6 @@ class MyHashMap {
       .map((ele) => ele.charCodeAt(0))
       .reduce((acc, cur) => acc + cur, 0);
     return hashCode % this.index;
-
   }
 
   put(key, value) { //put(String key, String value) 키-값을 추가한다.
