@@ -33,4 +33,4 @@ const func = (str) => {
   let idx = 1;
   return parse();
 }
-console.log(func('[6,[3,[4,[1]]]]'));
+console.log(func('[6,[3,[4,[1]]],1,3]'));
