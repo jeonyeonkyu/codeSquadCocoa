@@ -1,28 +1,28 @@
 class dataRulesChecker {
-  constructor() {
-    this.realArray = [];
-  }
+  constructor() { }
 
   run(str) {
     if (!this.bracketsCountCheck(str)) {
-      return '괄호 개수가 맞지 않습니다.';
+      console.log('괄호 개수가 맞지 않습니다.');
+      return;
     } else if (!this.bracketsStateCheck(str)) {
-      return '괄호 형식이 맞지 않습니다';
+      console.log('괄호 형식이 맞지 않습니다');
+      return;
     }
-    this.realArray = this.replaceStringIntoArray(str);
-    this.printBasicInfo(this.getMaxDepthLevel(str));
+    this.printBasicInfo(this.getMaxDepthLevel(str), this.replaceStringIntoArray(str));
+    this.printDetailInfo(this.replaceStringIntoArray(str));
   }
 
   getMaxDepthLevel(str) { // 깊이수준 구하는 함수
     let depthLevel = 0;
     let count = 0;
-    for(let i = 0; i<str.length; i++){
-      if(str[i] === '['){
+    for (let i = 0; i < str.length; i++) {
+      if (str[i] === '[') {
         count++;
-      }else if(str[i] === ']'){
+      } else if (str[i] === ']') {
         count--;
       }
-      if(depthLevel < count){
+      if (depthLevel < count) {
         depthLevel++;
       }
     }
@@ -54,8 +54,7 @@ class dataRulesChecker {
     return true;
   }
 
-  //내가 짠 코드 아님.. 아직 분석 필요, // [] 이런식으로 열고 바로 닫으면 0이라는 인자가 들어가는 것 수정필요
-  replaceStringIntoArray(str) { // String으로 인자를 Array로 치환해주는 함수 //사실 eval() 쓰면 되는거;;
+  replaceStringIntoArray(str) { // String으로 받은 인자를 Array로 치환해주는 함수 
     let idx = 1;
     const parse = () => {
       const res = [];
@@ -89,23 +88,55 @@ class dataRulesChecker {
     return parse();
   }
 
-  printBasicInfo(maxDepthLevel) { //기본정보 출력
-    console.log(`깊이 수준은 ${maxDepthLevel}이며,
-     총 ${this.realArray.flat(Infinity).length}개의 원소가 포함되어 있습니다`);
+
+  constructObj(arr) {
+    const parse = (divisionArr) => {
+      const res = [];
+      let obj = {};
+      for (let i = 0; i < divisionArr.length; i++) {
+        const char = divisionArr[i];
+        if (typeof char === 'number') {
+          obj = {
+            type: 'number',
+            value: char,
+            child: []
+          }
+        } else if (Array.isArray(char)) {
+          obj = {
+            type: 'array',
+            child: parse(char)
+          }
+        }
+        res.push(obj);
+      }
+      return res;
+    }
+
+    return {
+      type: "root",
+      child: [
+        {
+          type: "array",
+          child: parse(arr)
+        }
+      ]
+    }
   }
 
-  printDetailInfo() { //상세정보 출력
+  printBasicInfo(maxDepthLevel, realArray) { //기본정보 출력
+    console.log(`깊이 수준은 ${maxDepthLevel}이며, 총 ${realArray.flat(Infinity).length}개의 원소가 포함되어 있습니다`);
 
+  }
+
+  printDetailInfo(arr) { //상세정보 출력
+    console.dir(this.constructObj(arr), { depth: null });
   }
 }
 
-
-
-
-
+//테스트
 const test = new dataRulesChecker();
-test.run('[1,2,[3,4,[5,[6,[4],[1,[2]]],[3]]],1]');
-console.log(test.run('][[1,2,[3,4,[5,[6,[4]],[3]]],1]'));
-console.log(test.realArray);
-test.run('[1,2,[3]]');
+test.run('][1,[3,[41][]]')  //형식에 맞지않는 것
+test.run('[1,2,[3,4,[5,[6]]]]');
+test.run('[11,2444,[3,41,[5,[64]]],71]');
+
 
