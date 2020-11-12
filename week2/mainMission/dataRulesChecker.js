@@ -1,7 +1,5 @@
 class dataRulesChecker {
   constructor() {
-    this.depth = 1;
-    this.depthLevel = [1];
     this.realArray = [];
   }
 
@@ -12,25 +10,29 @@ class dataRulesChecker {
       return '괄호 형식이 맞지 않습니다';
     }
     this.realArray = this.replaceStringIntoArray(str);
-    this.printBasicInfo();
+    this.printBasicInfo(this.getMaxDepthLevel(str));
   }
 
+  getMaxDepthLevel(str) { // 깊이수준 구하는 함수
+    let depthLevel = 0;
+    let count = 0;
+    for(let i = 0; i<str.length; i++){
+      if(str[i] === '['){
+        count++;
+      }else if(str[i] === ']'){
+        count--;
+      }
+      if(depthLevel < count){
+        depthLevel++;
+      }
+    }
+    return depthLevel;
+  }
 
   bracketsCountCheck(str) {  // 괄호 갯수가 맞는지 체크하는 함수
-    const strArr = str.split('');
-    let openCount = 0;
-    let closeCount = 0;
-    strArr.forEach(ele => {
-      if (ele === '[') {
-        openCount++;
-      } else if (ele === ']') {
-        closeCount++;
-      }
-    })
-    if ((openCount !== closeCount)) {
-      return false;
-    };
-    return true;
+    const openCount = str.match(/\[/g).length;
+    const closeCount = str.match(/\]/g).length;
+    return openCount === closeCount;
   }
 
   bracketsStateCheck(str) { // 괄호형식이 맞는지 체크하는 함수
@@ -53,7 +55,7 @@ class dataRulesChecker {
   }
 
   //내가 짠 코드 아님.. 아직 분석 필요, // [] 이런식으로 열고 바로 닫으면 0이라는 인자가 들어가는 것 수정필요
-  replaceStringIntoArray(str) { // String으로 인자를 Array로 치환해주는 함수 
+  replaceStringIntoArray(str) { // String으로 인자를 Array로 치환해주는 함수 //사실 eval() 쓰면 되는거;;
     let idx = 1;
     const parse = () => {
       const res = [];
@@ -64,13 +66,10 @@ class dataRulesChecker {
         switch (char) {
           case '[':
             flag = false;
-            this.depth++;
-            this.depthLevel.push(this.depth);
             res.push(parse());
             break;
           case ']':
             if (flag) {
-              this.depth--;
               res.push(num);
             }
             return res;
@@ -90,12 +89,12 @@ class dataRulesChecker {
     return parse();
   }
 
-  printBasicInfo() {
-    console.log(`깊이 수준은 ${Math.max(...this.depthLevel)}이며,
+  printBasicInfo(maxDepthLevel) { //기본정보 출력
+    console.log(`깊이 수준은 ${maxDepthLevel}이며,
      총 ${this.realArray.flat(Infinity).length}개의 원소가 포함되어 있습니다`);
   }
 
-  printDetailInfo() {
+  printDetailInfo() { //상세정보 출력
 
   }
 }
@@ -105,7 +104,7 @@ class dataRulesChecker {
 
 
 const test = new dataRulesChecker();
-test.run('[1,2,[3,4,[5,[6,[4]],[3]]],1]');
+test.run('[1,2,[3,4,[5,[6,[4],[1,[2]]],[3]]],1]');
 console.log(test.run('][[1,2,[3,4,[5,[6,[4]],[3]]],1]'));
 console.log(test.realArray);
 test.run('[1,2,[3]]');
