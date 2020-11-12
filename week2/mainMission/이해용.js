@@ -1,9 +1,9 @@
-  //[6,[3,[4,[1]]]]
-  //디버그 찍으면서 보기~
+//[6,[3,[4,[1]]]]
+//디버그 찍으면서 보기~
 const func = (str) => {
   const parse = () => {
     const res = [];
-    let num = 0;
+    let num = '';
     let flag = true;
     while (idx < str.length) {
       const char = str[idx++];
@@ -14,13 +14,19 @@ const func = (str) => {
           break;
         case ']':
           if (flag) {
+            if (num === '') {
+              res.length++;
+              return res;
+            }
             res.push(num);
           }
           return res;
         case ',':
-          if (flag) {
+          if (num === '') {
+            res.length++;
+          } else {
             res.push(num);
-            num = 0;
+            num = '';
           }
           break;
         default:
@@ -33,4 +39,5 @@ const func = (str) => {
   let idx = 1;
   return parse();
 }
-console.log(func('[6,[3,[4,[1]]],1,3]'));
+console.log(func('[6,[3,,,[4,[1]]],1,3,[]]'));
+console.log(func('[,[],,,]'));
