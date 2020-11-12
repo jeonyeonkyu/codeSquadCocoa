@@ -58,7 +58,7 @@ class dataRulesChecker {
     let idx = 1;
     const parse = () => {
       const res = [];
-      let num = 0;
+      let val = '';
       let flag = true;
       while (idx < str.length) {
         const char = str[idx++];
@@ -69,18 +69,24 @@ class dataRulesChecker {
             break;
           case ']':
             if (flag) {
-              res.push(num);
+              if (val === '') {
+                res.length++; //빈 배열( [] ) or 빈원소(,,,,) 이 들어갔을때 <1 empty item> 추가하기
+                return res;
+              }
+              res.push(val);
             }
             return res;
           case ',':
-            if (flag) {
-              res.push(num);
-              num = 0;
+            if (val === '') {
+              res.length++;
+            } else {
+              res.push(val);
+              val = '';
             }
             break;
           default:
             flag = true;
-            num = num * 10 + Number(char);
+            val = val * 10 + Number(char);
         }
       }
       return res;
@@ -92,7 +98,7 @@ class dataRulesChecker {
   constructObj(arr) {
     const parse = (divisionArr) => {
       const res = [];
-      let obj = {};
+      let obj;
       for (let i = 0; i < divisionArr.length; i++) {
         const char = divisionArr[i];
         if (typeof char === 'number') {
@@ -105,6 +111,11 @@ class dataRulesChecker {
           obj = {
             type: 'array',
             child: parse(char)
+          }
+        } else if (typeof char === 'undefined') {
+          obj = {
+            type: 'undefined',
+            child: []
           }
         }
         res.push(obj);
@@ -135,8 +146,8 @@ class dataRulesChecker {
 
 //테스트
 const test = new dataRulesChecker();
-test.run('][1,[3,[41][]]')  //형식에 맞지않는 것
+test.run('][1,[3,[41][]]')  //형식에 맞지않는 것 테스트
 test.run('[1,2,[3,4,[5,[6]]]]');
-test.run('[11,2444,[3,41,[5,[64]]],71]');
-
+test.run('[11,2444,[3,41,[5,[64]]],71,[],,,]'); // undefined 출력 테스트
+console.log(test.replaceStringIntoArray('[11,2444,[3,41,[5,[64]]],71,[],,,]')); // <empty items> 출력 확인용 테스트
 
