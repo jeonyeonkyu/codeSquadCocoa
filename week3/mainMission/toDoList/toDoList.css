@@ -9,12 +9,13 @@
   height: 2.8rem;
   display: flex;
   align-items: center;
+  padding-bottom: 3px;
   margin-bottom: 3.5rem;
 }
 
 .todo_header div {
   font-size: 1.1rem;
-  padding-left: 2.5rem;
+  padding-left: 3rem;
   color: #7F8582;
 }
 
