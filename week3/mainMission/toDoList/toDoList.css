@@ -4,60 +4,77 @@
 }
 
 .todo_header {
-  background-color:darkslategrey; 
-  color : aliceblue;
-  height : 2.5rem; 
+  background-color: #222222;
+  color: aliceblue;
+  height: 2.8rem;
   display: flex;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3.5rem;
 }
 
-.todo_header div{
-  font-size: 1rem; 
-  padding-left : 2.5rem; 
-  color : powderblue
+.todo_header div {
+  font-size: 1.1rem;
+  padding-left: 2.5rem;
+  color: #7F8582;
 }
 
-.todo_section{
+.todo_section {
   width: 800px;
   margin: auto;
 }
-.todo_title{
+
+.todo_title {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
 }
-.input_field{
+
+.input_field {
   text-align: center;
-  height:2rem;
-  margin-bottom: 2rem;
+  height: 2rem;
+  margin-bottom: 3rem;
 }
-.text_input{
-  width:80%;
-  height:80%;
+
+.text_input {
+  border: 1px solid #c3c3c3;
+  border-radius: 5px;
+  width: 76%;
+  height: 100%;
+  padding-left: .6rem;
   margin-right: 1rem;
 }
-.add_button{
-  height:90%;
-  width:3rem;
-  cursor:pointer;
+
+.add_button {
+  background-color: #337AB7;
+  color: #E7E8E8;
+  border: none;
+  border-radius: 5px;
+  height: 100%;
+  width: 3rem;
+  cursor: pointer;
 }
-.contents{
-  border : 1px solid gray;
+
+.contents {
+  border: 1px solid #c3c3c3;
   padding: 1.8rem 1.8rem;
+  margin-top: -1px;
 }
-.todo_checkbox_wrap{
-  display:inline-block;
+
+.todo_checkbox_wrap {
+  display: inline-block;
   width: 10%;
 }
-.todo_checkbox{
-  cursor:pointer;
+
+.todo_checkbox {
+  cursor: pointer;
 }
-.todo_item{
+
+.todo_item {
   display: inline-block;
-  width:85%;
+  width: 85%;
 }
-.trash_basket{
-  height:1.2rem;
-  fill:red;
-  cursor:pointer;
+
+.trash_basket {
+  height: 1.2rem;
+  fill: red;
+  cursor: pointer;
 }
