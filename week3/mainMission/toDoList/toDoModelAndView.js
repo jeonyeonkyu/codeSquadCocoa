@@ -50,6 +50,7 @@ class View {
   handleAddButtonClick(event) {
     this.todoModel.addList(this.task.value);
     this.showList(this.todoModel.getTodoList());
+    this.task.value = '';
   }
 
   handleRemoveButtonClick(event) {
