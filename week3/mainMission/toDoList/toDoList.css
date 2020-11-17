@@ -21,7 +21,7 @@
 
 .todo_section {
   width: 800px;
-  margin: auto;
+  margin: 0 auto 7rem;
 }
 
 .todo_title {
@@ -66,7 +66,37 @@
 }
 
 .todo_checkbox {
+  position: relative;
+  top:2px;
   cursor: pointer;
+  margin-right:1rem;
+}
+
+.edit_button {
+  border: none;
+  background-color: #17A2B8;
+  color: #E7E8E8;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 2rem;
+  height:1.5rem;
+  
+}
+.edit_ok_button{
+  border: none;
+  background-color: #28A745;
+  color: #E7E8E8;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 2rem;
+  height:1.5rem;
+}
+.edit_input{
+  border: 1px solid #c3c3c3;
+  border-radius: 5px;
+  width: 90%;
+  height: 1.5rem;
+  padding-left: .6rem;
 }
 
 .todo_item {

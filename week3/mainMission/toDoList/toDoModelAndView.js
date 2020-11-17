@@ -18,6 +18,11 @@ class Model {
     }
   }
 
+  editList(id, task) {
+    const eventTargetIndex = this.toDoList.findIndex(element => (element.elementId === parseInt(id, 10)));
+    this.toDoList[eventTargetIndex]['item'] = task;
+  }
+
   removeList(id) {
     const eventTargetIndex = this.toDoList.findIndex(element => (element.elementId === parseInt(id, 10)));
     this.toDoList.splice(eventTargetIndex, 1);
@@ -38,13 +43,18 @@ class View {
     this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
     this.handleCheckBox = this.handleCheckBox.bind(this);
     this.handleRemoveButtonClick = this.handleRemoveButtonClick.bind(this);
+    this.handleEditButtonClick = this.handleEditButtonClick.bind(this);
+    this.handleEditOkButtonClick = this.handleEditOkButtonClick.bind(this);
     this.initEvent();
   }
 
   initEvent() {
+    const articleTag = document.querySelector('.article');
     document.querySelector('.add_button').addEventListener('click', this.handleAddButtonClick);
-    document.querySelector('.article').addEventListener('click', this.handleCheckBox);
-    document.querySelector('.article').addEventListener('click', this.handleRemoveButtonClick);
+    articleTag.addEventListener('click', this.handleCheckBox);
+    articleTag.addEventListener('click', this.handleRemoveButtonClick);
+    articleTag.addEventListener('click', this.handleEditButtonClick);
+    articleTag.addEventListener('click', this.handleEditOkButtonClick);
   }
 
   handleAddButtonClick(event) {
@@ -71,6 +81,7 @@ class View {
       `<div class="contents" id="${elementId}">
         <span class="todo_checkbox_wrap">
           <input class="todo_checkbox" type="checkbox" ${checked ? 'checked' : ''}>
+          <button class="edit_button">edit</button>
         </span>
         <span class="todo_item" style="text-decoration: ${checked ? 'line-through' : 'none'}">${item}</span>
         <svg class="trash_basket" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -91,6 +102,28 @@ class View {
       this.showList(this.todoModel.getTodoList());
     }
   }
+
+  handleEditButtonClick(event) {
+    if (event.target.className === 'edit_button') {
+      const originalTask = event.target.parentElement.parentElement.firstElementChild.nextElementSibling.innerHTML;
+      event.target.parentElement.parentElement.firstElementChild.nextElementSibling.innerHTML = `<input class="edit_input" type="text" value="${originalTask}">`;
+      const editButton = event.target.parentElement.parentElement.firstElementChild.firstElementChild.nextElementSibling;
+      const editOkButton = document.createElement('Button');
+      editOkButton.className = 'edit_ok_button';
+      editOkButton.innerHTML = 'Ok';
+      editButton.replaceWith(editOkButton);
+    }
+  }
+
+  handleEditOkButtonClick(event) {
+    if (event.target.className === 'edit_ok_button') {
+      const inputTask = event.target.parentElement.parentElement.firstElementChild.nextElementSibling.firstElementChild.value;
+      const elementId = event.target.parentElement.parentElement.getAttribute('id');
+      this.todoModel.editList(elementId, inputTask)
+      this.showList(this.todoModel.getTodoList());
+    }
+  }
+
 }
 
 
