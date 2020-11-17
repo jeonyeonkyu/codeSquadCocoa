@@ -66,7 +66,6 @@ class View {
     }
   }
 
-
   showList(toDoList) {
     const template = toDoList.map(({ elementId, checked, item }) => (
       `<div class="contents" id="${elementId}">
@@ -85,7 +84,6 @@ class View {
     this.article.innerHTML = template;
   }
 
-
   handleCheckBox(event) {
     if (event.target.className === "todo_checkbox") {
       const elementId = event.target.parentElement.parentElement.getAttribute('id');
@@ -94,6 +92,7 @@ class View {
     }
   }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const toDoModel = new Model();
