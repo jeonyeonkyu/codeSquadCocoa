@@ -40,7 +40,6 @@
   flex-wrap: nowrap;
   overflow-x: auto;
   border-radius: .5rem .5rem 0 0;
-  position: relative;
 }
 
 .view_by_date {
