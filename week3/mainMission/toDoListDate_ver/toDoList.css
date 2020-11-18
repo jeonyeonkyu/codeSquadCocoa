@@ -29,13 +29,36 @@
   margin-bottom: 1.5rem;
 }
 
-.date_format_button {
+.view_by_date_page {
+  background-color: #f0f0f0;
+  width: 70rem;
+  height: 38rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.view_by_date {
   background-color: #e05e36;
   color: #E7E8E8;
   border: none;
   border-radius: 5px;
   height: 2rem;
-  width: 6rem;
+  width: 7.3rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.view_by_writing_order {
+  background-color: #7136e0;
+  color: #E7E8E8;
+  border: none;
+  border-radius: 5px;
+  height: 2rem;
+  width: 7.3rem;
   cursor: pointer;
   margin-bottom: 1rem;
 }
@@ -131,4 +154,32 @@
   height: 1.2rem;
   fill: red;
   cursor: pointer;
+}
+
+.item_box {
+  padding: 1.2rem 1.5rem;
+  width: 16rem;
+  background-color: #FFFFFF;
+  height: 6rem;
+  margin: 0.5rem auto 1rem;
+  border-radius: 1rem;
+}
+
+.date_of_writing {
+  margin: 1rem 0 0 2.5rem;
+  font-size: large;
+  font-weight: bold;
+}
+
+.box_by_date {
+  width: 20rem;
+  height: 100%;
+  border-right: 1px solid #cacaca; 
+  flex: none;
+}
+
+.written {
+  margin-top: .8rem;
+  margin-bottom: .8rem;
+  list-style-type: none;
 }

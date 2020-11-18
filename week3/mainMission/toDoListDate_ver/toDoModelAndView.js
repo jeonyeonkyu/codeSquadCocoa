@@ -43,6 +43,12 @@ class Model {
     this.toDoModelDividedToDate = keyBy(this.toDoModel, 'date');
   }
 
+  getArraySortedByDate() {
+    const arrayWithDateFirstValue = Object.entries(this.toDoModelDividedToDate);
+    arrayWithDateFirstValue.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+    return arrayWithDateFirstValue;
+  }
+
   getTodoModel() {
     return [...this.toDoModel];
   }
@@ -52,24 +58,31 @@ class View {
   constructor({ toDoModel }) {
     this.todoModel = toDoModel;
   }
-  init(textInput, dateInput, article) {
+  init(textInput, dateInput, article, addButton, viewByDateButton) {
     this.taskInput = textInput;
     this.dateInput = dateInput;
     this.article = article;
+    this.viewByDateButton = viewByDateButton;
+    this.addButton = addButton;
+    this.viewByWritingOrderButton = this.createViewByWritingOrderButton();
     this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
     this.handleCheckBox = this.handleCheckBox.bind(this);
     this.handleRemoveButtonClick = this.handleRemoveButtonClick.bind(this);
     this.handleEditButtonClick = this.handleEditButtonClick.bind(this);
     this.handleEditOkButtonClick = this.handleEditOkButtonClick.bind(this);
+    this.viewByDateButtonClick = this.viewByDateButtonClick.bind(this);
+    this.viewByWritingOrderButtonClick = this.viewByWritingOrderButtonClick.bind(this);
     this.initEvent();
   }
 
   initEvent() {
-    document.querySelector('.add_button').addEventListener('click', this.handleAddButtonClick);
+    this.addButton.addEventListener('click', this.handleAddButtonClick);
     this.article.addEventListener('click', this.handleCheckBox);
     this.article.addEventListener('click', this.handleRemoveButtonClick);
     this.article.addEventListener('click', this.handleEditButtonClick);
     this.article.addEventListener('click', this.handleEditOkButtonClick);
+    this.viewByDateButton.addEventListener('click', this.viewByDateButtonClick);
+    this.viewByWritingOrderButton.addEventListener('click', this.viewByWritingOrderButtonClick)
   }
 
   handleAddButtonClick(event) {
@@ -133,9 +146,10 @@ class View {
 
   handleEditButtonClick(event) {
     if (event.target.className === 'edit_button') {
-      const originalTask = event.target.parentElement.parentElement.firstElementChild.nextElementSibling.innerHTML;
-      event.target.parentElement.parentElement.firstElementChild.nextElementSibling.innerHTML = `<input class="edit_input" type="text" value="${originalTask}">`;
-      const editButton = event.target.parentElement.parentElement.firstElementChild.firstElementChild.nextElementSibling;
+      const originalTaskTag = event.target.parentElement.parentElement.firstElementChild.nextElementSibling;
+      const taskText = originalTaskTag.innerHTML;
+      originalTaskTag.innerHTML = `<input class="edit_input" type="text" value="${taskText}">`;
+      const editButton = event.target;
       const editOkButton = document.createElement('Button');
       editOkButton.className = 'edit_ok_button';
       editOkButton.innerHTML = 'Ok';
@@ -152,6 +166,53 @@ class View {
     }
   }
 
+  viewByDateButtonClick(event) {
+    event.target.replaceWith(this.viewByWritingOrderButton);
+    this.todoModel.splitModelByDate();
+    console.warn(this.todoModel.toDoModelDividedToDate);
+    this.showList2()
+  }
+
+  showList2() {
+    const sortedDateArray = this.todoModel.getArraySortedByDate();
+    let template = `<div class="view_by_date_page">`;
+    sortedDateArray.forEach(element => {
+      template += `<div class="box_by_date">
+                   <div class="date_of_writing">${element[0]}</div>`
+      element[1].forEach(({ elementId, checked, item, date }) => {
+        template +=
+          `<div class="item_box" id = ${elementId}>
+            <div>
+              <input class="todo_checkbox" type="checkbox" ${checked ? 'checked' : ''}>
+              <button class="edit_button">edit</button>
+            </div>
+            <li class="written" style="text-decoration: ${checked ? 'line-through' : 'none'}">${item}</li>
+            <svg class="trash_basket" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+              enable-background="new 0 0 32 32" id="Glyph" version="1.1" viewBox="0 0 32 32" xml:space="preserve">
+             <path class="trash_basket_path" d="M6,12v15c0,1.654,1.346,3,3,3h14c1.654,0,3-1.346,3-3V12H6z M12,25c0,0.552-0.448,1-1,1s-1-0.448-1-1v-9  c0-0.552,0.448-1,1-1s1,0.448,1,1V25z M17,25c0,0.552-0.448,1-1,1s-1-0.448-1-1v-9c0-0.552,0.448-1,1-1s1,0.448,1,1V25z M22,25  c0,0.552-0.448,1-1,1s-1-0.448-1-1v-9c0-0.552,0.448-1,1-1s1,0.448,1,1V25z"
+              id="XMLID_237_" />
+             <path class="trash_basket_path" d="M27,6h-6V5c0-1.654-1.346-3-3-3h-4c-1.654,0-3,1.346-3,3v1H5C3.897,6,3,6.897,3,8v1c0,0.552,0.448,1,1,1h24  c0.552,0,1-0.448,1-1V8C29,6.897,28.103,6,27,6z M13,5c0-0.551,0.449-1,1-1h4c0.551,0,1,0.449,1,1v1h-6V5z"
+              id="XMLID_243_" /></svg>
+         </div>`
+      })
+      template += `</div>`
+    })
+    template += `</div>`
+    this.article.innerHTML = template;
+  }
+
+
+  createViewByWritingOrderButton() {
+    const viewByWritingOrderButton = document.createElement('Button');
+    viewByWritingOrderButton.className = 'view_by_writing_order';
+    viewByWritingOrderButton.innerHTML = '작성순으로 보기';
+    return viewByWritingOrderButton;
+  }
+
+  viewByWritingOrderButtonClick(event) {
+    event.target.replaceWith(this.viewByDateButton);
+  }
+
 }
 
 
@@ -161,5 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputText = document.querySelector('.text_input');
   const inputDate = document.querySelector('.date_input')
   const article = document.querySelector('.article');
-  toDoView.init(inputText, inputDate, article);
+  const addButton = document.querySelector('.add_button');
+  const viewByDateButton = document.querySelector('.view_by_date');
+  toDoView.init(inputText, inputDate, article, addButton, viewByDateButton);
 })
