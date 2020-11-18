@@ -1,45 +1,45 @@
 class Model {
   constructor() {
-    this.toDoList = [];
+    this.toDoModel = [];
     this.countId = 1;
   }
-  addList(task) {
+  addToArray(task) {
     if (task !== '') {
-      this.toDoList.push({ 'elementId': this.countId++, 'item': task, 'checked': false });
+      this.toDoModel.push({ 'elementId': this.countId++, 'item': task, 'checked': false });
     }
   }
 
-  updateChecked(id) {
-    const eventTargetIndex = this.toDoList.findIndex(element => (element.elementId === parseInt(id, 10)));
-    if (this.toDoList[eventTargetIndex]['checked'] === false) {
-      this.toDoList[eventTargetIndex]['checked'] = true
+  changeToChecked(id) {
+    const eventTargetIndex = this.toDoModel.findIndex(element => (element.elementId === parseInt(id, 10)));
+    if (this.toDoModel[eventTargetIndex]['checked'] === false) {
+      this.toDoModel[eventTargetIndex]['checked'] = true
     } else {
-      this.toDoList[eventTargetIndex]['checked'] = false;
+      this.toDoModel[eventTargetIndex]['checked'] = false;
     }
   }
 
-  editList(id, task) {
-    const eventTargetIndex = this.toDoList.findIndex(element => (element.elementId === parseInt(id, 10)));
-    this.toDoList[eventTargetIndex]['item'] = task;
+  editToArray(id, task) {
+    const eventTargetIndex = this.toDoModel.findIndex(element => (element.elementId === parseInt(id, 10)));
+    this.toDoModel[eventTargetIndex]['item'] = task;
   }
 
-  removeList(id) {
-    const eventTargetIndex = this.toDoList.findIndex(element => (element.elementId === parseInt(id, 10)));
-    this.toDoList.splice(eventTargetIndex, 1);
+  removeToArray(id) {
+    const eventTargetIndex = this.toDoModel.findIndex(element => (element.elementId === parseInt(id, 10)));
+    this.toDoModel.splice(eventTargetIndex, 1);
   }
 
-  getTodoList() {
-    return [...this.toDoList]
+  getTodoModel() {
+    return [...this.toDoModel]
   }
 }
 
 class View {
   constructor({ toDoModel }) {
-    this.task = document.querySelector('.text_input');
-    this.article = document.querySelector('.article');
     this.todoModel = toDoModel;
   }
-  init() {
+  init(input, article) {
+    this.task = input;
+    this.article = article;
     this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
     this.handleCheckBox = this.handleCheckBox.bind(this);
     this.handleRemoveButtonClick = this.handleRemoveButtonClick.bind(this);
@@ -49,7 +49,7 @@ class View {
   }
 
   initEvent() {
-    const articleTag = document.querySelector('.article');
+    const articleTag = this.article;
     document.querySelector('.add_button').addEventListener('click', this.handleAddButtonClick);
     articleTag.addEventListener('click', this.handleCheckBox);
     articleTag.addEventListener('click', this.handleRemoveButtonClick);
@@ -58,8 +58,8 @@ class View {
   }
 
   handleAddButtonClick(event) {
-    this.todoModel.addList(this.task.value);
-    this.showList(this.todoModel.getTodoList());
+    this.todoModel.addToArray(this.task.value);
+    this.showList(this.todoModel.getTodoModel());
     this.task.value = '';
   }
 
@@ -71,13 +71,13 @@ class View {
     const getIdFunc = className[event.target.getAttribute('class')]
     if (getIdFunc) {
       const id = getIdFunc(event.target)
-      this.todoModel.removeList(id);
-      this.showList(this.todoModel.getTodoList());
+      this.todoModel.removeToArray(id);
+      this.showList(this.todoModel.getTodoModel());
     }
   }
 
-  showList(toDoList) {
-    const template = toDoList.map(({ elementId, checked, item }) => (
+  showList(toDoModel) {
+    const template = toDoModel.map(({ elementId, checked, item }) => (
       `<div class="contents" id="${elementId}">
         <span class="todo_checkbox_wrap">
           <input class="todo_checkbox" type="checkbox" ${checked ? 'checked' : ''}>
@@ -98,8 +98,8 @@ class View {
   handleCheckBox(event) {
     if (event.target.className === "todo_checkbox") {
       const elementId = event.target.parentElement.parentElement.getAttribute('id');
-      this.todoModel.updateChecked(elementId);
-      this.showList(this.todoModel.getTodoList());
+      this.todoModel.changeToChecked(elementId);
+      this.showList(this.todoModel.getTodoModel());
     }
   }
 
@@ -119,8 +119,8 @@ class View {
     if (event.target.className === 'edit_ok_button') {
       const inputTask = event.target.parentElement.parentElement.firstElementChild.nextElementSibling.firstElementChild.value;
       const elementId = event.target.parentElement.parentElement.getAttribute('id');
-      this.todoModel.editList(elementId, inputTask)
-      this.showList(this.todoModel.getTodoList());
+      this.todoModel.editToArray(elementId, inputTask)
+      this.showList(this.todoModel.getTodoModel());
     }
   }
 
@@ -130,5 +130,7 @@ class View {
 document.addEventListener('DOMContentLoaded', () => {
   const toDoModel = new Model();
   const toDoView = new View({ toDoModel });
-  toDoView.init();
+  const inputText = document.querySelector('.text_input');
+  const article = document.querySelector('.article');
+  toDoView.init(inputText, article);
 })
