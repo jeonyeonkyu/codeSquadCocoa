@@ -70,8 +70,8 @@ class View {
     this.handleRemoveButtonClick = this.handleRemoveButtonClick.bind(this);
     this.handleEditButtonClick = this.handleEditButtonClick.bind(this);
     this.handleEditOkButtonClick = this.handleEditOkButtonClick.bind(this);
-    this.viewByDateButtonClick = this.viewByDateButtonClick.bind(this);
-    this.viewByWritingOrderButtonClick = this.viewByWritingOrderButtonClick.bind(this);
+    this.handleViewByDateButtonClick = this.handleViewByDateButtonClick.bind(this);
+    this.handleViewByWritingOrderButtonClick = this.handleViewByWritingOrderButtonClick.bind(this);
     this.initEvent();
   }
 
@@ -81,14 +81,14 @@ class View {
     this.article.addEventListener('click', this.handleRemoveButtonClick);
     this.article.addEventListener('click', this.handleEditButtonClick);
     this.article.addEventListener('click', this.handleEditOkButtonClick);
-    this.viewByDateButton.addEventListener('click', this.viewByDateButtonClick);
-    this.viewByWritingOrderButton.addEventListener('click', this.viewByWritingOrderButtonClick)
+    this.viewByDateButton.addEventListener('click', this.handleViewByDateButtonClick);
+    this.viewByWritingOrderButton.addEventListener('click', this.handleViewByWritingOrderButtonClick)
   }
 
   handleAddButtonClick(event) {
     this.confirmToInput();
     this.todoModel.addToArray(this.taskInput.value, this.dateInput.value);
-    this.showList(this.todoModel.getTodoModel());
+    this.togglePage();
     this.taskInput.value = '';
   }
 
@@ -113,7 +113,7 @@ class View {
     if (getIdFunc) {
       const id = getIdFunc(event.target)
       this.todoModel.removeToArray(id);
-      this.showList(this.todoModel.getTodoModel());
+      this.togglePage();
     }
   }
 
@@ -140,7 +140,7 @@ class View {
     if (event.target.className === "todo_checkbox") {
       const elementId = event.target.parentElement.parentElement.getAttribute('id');
       this.todoModel.changeToChecked(elementId);
-      this.showList(this.todoModel.getTodoModel());
+      this.togglePage();
     }
   }
 
@@ -150,11 +150,27 @@ class View {
       const taskText = originalTaskTag.innerHTML;
       originalTaskTag.innerHTML = `<input class="edit_input" type="text" value="${taskText}">`;
       const editButton = event.target;
-      const editOkButton = document.createElement('Button');
-      editOkButton.className = 'edit_ok_button';
-      editOkButton.innerHTML = 'Ok';
+      const editOkButton = this.createEditOkButton();
       editButton.replaceWith(editOkButton);
     }
+  }
+////////////////////////////////
+  togglePage(){
+    const buttonName = document.querySelector('button').className;
+    if(buttonName === 'view_by_date'){
+      this.showList(this.todoModel.getTodoModel());
+    }else if(buttonName === 'view_by_writing_order'){
+      this.todoModel.splitModelByDate();
+      this.showListByDate();
+    }
+  }
+
+
+  createEditOkButton(){
+    const editOkButton = document.createElement('Button');
+    editOkButton.className = 'edit_ok_button';
+    editOkButton.innerHTML = 'Ok'
+    return editOkButton;
   }
 
   handleEditOkButtonClick(event) {
@@ -162,18 +178,16 @@ class View {
       const inputTask = event.target.parentElement.parentElement.firstElementChild.nextElementSibling.firstElementChild.value;
       const elementId = event.target.parentElement.parentElement.getAttribute('id');
       this.todoModel.editToArray(elementId, inputTask)
-      this.showList(this.todoModel.getTodoModel());
+      this.togglePage();
     }
   }
 
-  viewByDateButtonClick(event) {
+  handleViewByDateButtonClick(event) {
     event.target.replaceWith(this.viewByWritingOrderButton);
-    this.todoModel.splitModelByDate();
-    console.warn(this.todoModel.toDoModelDividedToDate);
-    this.showList2()
+    this.togglePage();
   }
 
-  showList2() {
+  showListByDate() {
     const sortedDateArray = this.todoModel.getArraySortedByDate();
     let template = `<div class="view_by_date_page">`;
     sortedDateArray.forEach(element => {
@@ -209,12 +223,12 @@ class View {
     return viewByWritingOrderButton;
   }
 
-  viewByWritingOrderButtonClick(event) {
+  handleViewByWritingOrderButtonClick(event) {
     event.target.replaceWith(this.viewByDateButton);
+    this.togglePage();
   }
 
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
   const toDoModel = new Model();

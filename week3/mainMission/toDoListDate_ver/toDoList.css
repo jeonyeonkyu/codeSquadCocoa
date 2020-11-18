@@ -39,6 +39,8 @@
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
+  border-radius: .5rem .5rem 0 0;
+  position: relative;
 }
 
 .view_by_date {
@@ -166,16 +168,21 @@
 }
 
 .date_of_writing {
-  margin: 1rem 0 0 2.5rem;
-  font-size: large;
-  font-weight: bold;
+  display: flex;
+  place-items: center;
+  place-content: center;
+  font-size: 19px;
+  height: 2.8rem;
+  color: #FFFFFF;
+  background-color: #4976f3;
+  border-radius: .5rem .5rem 0 0;
 }
 
 .box_by_date {
   width: 20rem;
-  height: 100%;
-  border-right: 1px solid #cacaca; 
+  border-right: 4px solid #FFFFFF;
   flex: none;
+  display: table;
 }
 
 .written {
