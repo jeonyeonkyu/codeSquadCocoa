@@ -29,6 +29,17 @@
   margin-bottom: 1.5rem;
 }
 
+.date_format_button {
+  background-color: #e05e36;
+  color: #E7E8E8;
+  border: none;
+  border-radius: 5px;
+  height: 2rem;
+  width: 6rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
 .input_field {
   text-align: center;
   height: 2rem;
@@ -43,13 +54,14 @@
   padding-left: .6rem;
 }
 
-.date_input{
+.date_input {
   border: 1px solid #c3c3c3;
   border-radius: 5px;
   height: 100%;
   padding-left: .6rem;
   margin-right: 1rem;
 }
+
 .add_button {
   background-color: #337AB7;
   color: #E7E8E8;
@@ -73,9 +85,9 @@
 
 .todo_checkbox {
   position: relative;
-  top:2px;
+  top: 2px;
   cursor: pointer;
-  margin-right:1rem;
+  margin-right: 1rem;
 }
 
 .edit_button {
@@ -85,19 +97,20 @@
   border-radius: 5px;
   cursor: pointer;
   width: 2rem;
-  height:1.5rem;
-  
+  height: 1.5rem;
 }
-.edit_ok_button{
+
+.edit_ok_button {
   border: none;
   background-color: #28A745;
   color: #E7E8E8;
   border-radius: 5px;
   cursor: pointer;
   width: 2rem;
-  height:1.5rem;
+  height: 1.5rem;
 }
-.edit_input{
+
+.edit_input {
   border: 1px solid #c3c3c3;
   border-radius: 5px;
   width: 90%;
@@ -107,7 +120,11 @@
 
 .todo_item {
   display: inline-block;
-  width: 85%;
+  width: 70%;
+}
+
+.date_view {
+  margin-right: 2rem;
 }
 
 .trash_basket {

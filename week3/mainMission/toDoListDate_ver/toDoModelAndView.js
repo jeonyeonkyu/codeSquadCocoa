@@ -1,18 +1,29 @@
+const keyBy = (arr, key) => {
+  const keyByObj = arr.reduce((acc, cur) => {
+    if (acc[cur[key]] === undefined) {
+      acc[cur[key]] = [];
+    }
+    acc[cur[key]].push(cur);
+    return acc;
+  }, {})
+  return keyByObj;
+}
+
 class Model {
   constructor() {
     this.toDoModel = [];
     this.countId = 1;
+    this.toDoModelDividedToDate = {};
   }
+
   addToArray(task, date) {
-    if (task !== '') {
-      this.toDoModel.push({ 'elementId': this.countId++, 'item': task, 'checked': false, 'date': date });
-    }
+    this.toDoModel.push({ 'elementId': this.countId++, 'item': task, 'checked': false, 'date': date });
   }
 
   changeToChecked(id) {
     const eventTargetIndex = this.toDoModel.findIndex(element => (element.elementId === parseInt(id, 10)));
     if (this.toDoModel[eventTargetIndex]['checked'] === false) {
-      this.toDoModel[eventTargetIndex]['checked'] = true
+      this.toDoModel[eventTargetIndex]['checked'] = true;
     } else {
       this.toDoModel[eventTargetIndex]['checked'] = false;
     }
@@ -28,8 +39,12 @@ class Model {
     this.toDoModel.splice(eventTargetIndex, 1);
   }
 
+  splitModelByDate() {
+    this.toDoModelDividedToDate = keyBy(this.toDoModel, 'date');
+  }
+
   getTodoModel() {
-    return [...this.toDoModel]
+    return [...this.toDoModel];
   }
 }
 
@@ -64,12 +79,12 @@ class View {
     this.taskInput.value = '';
   }
 
-  confirmToInput(){
-    if(this.taskInput.value === ''){
+  confirmToInput() {
+    if (this.taskInput.value === '') {
       alert('내용을 입력해주세요');
       this.taskInput.focus();
       throw new Error('inputTask is undefined');
-    }else if(this.dateInput.value === ''){
+    } else if (this.dateInput.value === '') {
       alert('날짜를 입력해주세요');
       this.dateInput.focus();
       throw new Error('inputDate is undefined');
@@ -91,12 +106,12 @@ class View {
 
   showList(toDoModel) {
     const template = toDoModel.map(({ elementId, checked, item, date }) => (
-      `${date}<div class="contents" id="${elementId}">
+      `<div class="contents" id="${elementId}">
         <span class="todo_checkbox_wrap">
           <input class="todo_checkbox" type="checkbox" ${checked ? 'checked' : ''}>
           <button class="edit_button">edit</button>
         </span>
-        <span class="todo_item" style="text-decoration: ${checked ? 'line-through' : 'none'}">${item}</span>
+        <span class="todo_item" style="text-decoration: ${checked ? 'line-through' : 'none'}">${item}</span><span class="date_view">${date}</span>
         <svg class="trash_basket" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
         enable-background="new 0 0 32 32" id="Glyph" version="1.1" viewBox="0 0 32 32" xml:space="preserve">
           <path class="trash_basket_path" d="M6,12v15c0,1.654,1.346,3,3,3h14c1.654,0,3-1.346,3-3V12H6z M12,25c0,0.552-0.448,1-1,1s-1-0.448-1-1v-9  c0-0.552,0.448-1,1-1s1,0.448,1,1V25z M17,25c0,0.552-0.448,1-1,1s-1-0.448-1-1v-9c0-0.552,0.448-1,1-1s1,0.448,1,1V25z M22,25  c0,0.552-0.448,1-1,1s-1-0.448-1-1v-9c0-0.552,0.448-1,1-1s1,0.448,1,1V25z"
