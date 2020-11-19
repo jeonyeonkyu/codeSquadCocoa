@@ -168,6 +168,9 @@
 
 .date_of_writing {
   display: flex;
+  position: sticky;
+  top:0;
+  z-index: 1;
   place-items: center;
   place-content: center;
   font-size: 19px;
@@ -179,6 +182,7 @@
 
 .box_by_date {
   width: 20rem;
+  height:100%;
   border-right: 4px solid #FFFFFF;
   flex: none;
   display: table;
