@@ -4,102 +4,102 @@
 }
 
 .todo_header {
+  display: flex;
+  height: 2.8rem;
+  margin-bottom: 3.5rem;
+  padding-bottom: 3px;
   background-color: #222222;
   color: aliceblue;
-  height: 2.8rem;
-  display: flex;
-  align-items: center;
-  padding-bottom: 3px;
-  margin-bottom: 3.5rem;
+  align-items: center
 }
 
 .todo_header div {
-  font-size: 1.1rem;
   padding-left: 3rem;
-  color: #7F8582;
+  font-size: 1.1rem;
+  color: #7F8582
 }
 
 .todo_section {
   width: 800px;
-  margin: 0 auto 7rem;
+  margin: 0 auto 7rem
 }
 
 .todo_title {
-  font-size: 2.5rem;
   margin-bottom: 1.5rem;
+  font-size: 2.5rem
 }
 
 .view_by_date_page {
-  background-color: #f0f0f0;
+  display: flex;
+  overflow-x: auto;
+  position: absolute;
   width: 70rem;
   height: 38rem;
-  position: absolute;
+  background-color: #f0f0f0;
   left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
   border-radius: .5rem .5rem 0 0;
+  flex-wrap: nowrap;
+  transform: translateX(-50%)
 }
 
 .view_by_date {
+  width: 7.3rem;
+  height: 2rem;
+  margin-bottom: 1rem;
+  border: none;
   background-color: #e05e36;
   color: #E7E8E8;
-  border: none;
   border-radius: 5px;
-  height: 2rem;
-  width: 7.3rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
+  cursor: pointer
 }
 
 .view_by_writing_order {
-  background-color: #7136e0;
-  color: #E7E8E8;
-  border: none;
-  border-radius: 5px;
   height: 2rem;
   width: 7.3rem;
-  cursor: pointer;
   margin-bottom: 1rem;
+  border: none;
+  background-color: #7136e0;
+  color: #E7E8E8;
+  cursor: pointer;
+  border-radius: 5px
 }
 
 .input_field {
-  text-align: center;
   height: 2rem;
   margin-bottom: 3rem;
+  text-align: center
 }
 
 .text_input {
-  border: 1px solid #c3c3c3;
-  border-radius: 5px;
   width: 65%;
   height: 100%;
   padding-left: .6rem;
+  border: 1px solid #c3c3c3;
+  border-radius: 5px;
 }
 
 .date_input {
-  border: 1px solid #c3c3c3;
-  border-radius: 5px;
   height: 100%;
-  padding-left: .6rem;
   margin-right: 1rem;
+  padding-left: .6rem;
+  border: 1px solid #c3c3c3;
+  border-radius: 5px
 }
 
 .add_button {
-  background-color: #337AB7;
-  color: #E7E8E8;
-  border: none;
-  border-radius: 5px;
   height: 100%;
   width: 3rem;
+  border: none;
+  background-color: #337AB7;
+  color: #E7E8E8;
   cursor: pointer;
+  border-radius: 5px
 }
 
 .contents {
-  border: 1px solid #c3c3c3;
-  padding: 1.8rem 1.8rem;
   margin-top: -1px;
+  padding: 1.8rem 1.8rem;
+  border: 1px solid #c3c3c3
 }
 
 .todo_checkbox_wrap {
@@ -109,83 +109,83 @@
 
 .todo_checkbox {
   position: relative;
+  margin-right: 1rem;
   top: 2px;
   cursor: pointer;
-  margin-right: 1rem;
 }
 
 .edit_button {
+  width: 2rem;
+  height: 1.5rem;
   border: none;
   background-color: #17A2B8;
   color: #E7E8E8;
-  border-radius: 5px;
   cursor: pointer;
-  width: 2rem;
-  height: 1.5rem;
+  border-radius: 5px
 }
 
 .edit_ok_button {
+  width: 2rem;
+  height: 1.5rem;
   border: none;
   background-color: #28A745;
   color: #E7E8E8;
   border-radius: 5px;
-  cursor: pointer;
-  width: 2rem;
-  height: 1.5rem;
+  cursor: pointer
 }
 
 .edit_input {
-  border: 1px solid #c3c3c3;
-  border-radius: 5px;
   width: 90%;
   height: 1.5rem;
   padding-left: .6rem;
+  border: 1px solid #c3c3c3;
+  border-radius: 5px
 }
 
 .todo_item {
   display: inline-block;
-  width: 70%;
+  width: 70%
 }
 
 .date_view {
-  margin-right: 2rem;
+  margin-right: 2rem
 }
 
 .trash_basket {
   height: 1.2rem;
-  fill: red;
   cursor: pointer;
+  fill: red
 }
 
 .item_box {
-  padding: 1.2rem 1.5rem;
   width: 16rem;
-  background-color: #FFFFFF;
   height: 6rem;
   margin: 0.5rem auto 1rem;
-  border-radius: 1rem;
+  padding: 1.2rem 1.5rem;
+  background-color: #FFFFFF;
+  border-radius: 1rem
 }
 
 .date_of_writing {
   display: flex;
-  position: sticky;
-  top:0;
   z-index: 1;
+  position: sticky;
+  height: 2.8rem;
+  background-color: #4976f3;
+  font-size: 19px;
+  color: #FFFFFF;
+  top:0;
   place-items: center;
   place-content: center;
-  font-size: 19px;
-  height: 2.8rem;
-  color: #FFFFFF;
-  background-color: #4976f3;
-  border-radius: .5rem .5rem 0 0;
+  border-radius: .5rem .5rem 0 0
 }
 
 .box_by_date {
+  display: table;
   width: 20rem;
   height:100%;
   border-right: 4px solid #FFFFFF;
-  flex: none;
-  display: table;
+  flex: none
 }
 
 .written {
