@@ -34,7 +34,7 @@ class FruitView {
   }
 
   mouseEnterTitleHandler = () => {
-    this.contents = window.setTimeout(() => this.showList(), 1000);
+    this.contents = window.setTimeout(() => { this.showList() }, 1000);
   }
 
   mouseLeaveTitleHandler = () => {
@@ -59,13 +59,14 @@ class DataView {
 
   initEvent() {
     this.fruitList.addEventListener('mousemove', this.mouseMoveDataHandler);
+    this.fruitList.addEventListener('mouseenter', this.mouseMoveDataHandler);
   }
 
   mouseMoveDataHandler = (event) => {
     if (!this.movementTimer) {
       this.movementTimer = window.setTimeout(() => {
-        this.movementTimer = null;
         this.moveToAdd(event);
+        this.movementTimer = null;
       }, 500);
     }
   }
@@ -97,5 +98,4 @@ document.addEventListener('DOMContentLoaded', () => {
   const dataView = new DataView();
   fruitView.init({ listTitle, fruitList });
   dataView.init({ model, fruitDataList, fruitList })
-
 })
