@@ -62,8 +62,12 @@ class DataView {
   }
 
   mouseMoveDataHandler = (event) => {
-    window.clearTimeout(this.movementTimer);
-    this.movementTimer = window.setTimeout(() => this.moveToAdd(event), 500);
+    if (!this.movementTimer) {
+      this.movementTimer = window.setTimeout(() => {
+        this.movementTimer = null;
+        this.moveToAdd(event);
+      }, 500);
+    }
   }
 
   moveToAdd = (event) => {
