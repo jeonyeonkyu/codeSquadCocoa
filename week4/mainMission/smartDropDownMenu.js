@@ -59,7 +59,6 @@ class DataView {
 
   initEvent() {
     this.fruitList.addEventListener('mousemove', this.mouseMoveDataHandler);
-    this.fruitList.addEventListener('mouseenter', this.mouseMoveDataHandler);
   }
 
   mouseMoveDataHandler = (event) => {
