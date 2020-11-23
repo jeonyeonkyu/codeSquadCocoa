@@ -1,0 +1,30 @@
+.list_title {
+  width: 18rem;
+  margin-top: 3rem;
+  border: 1px solid gray;
+  text-align: center
+}
+
+.fruit_list {
+  display: none;
+  padding: 0;
+  list-style-type: none
+}
+
+.fruit_list li {
+  width: 17rem;
+  height: 3.3rem;
+  padding-left: 1rem;
+  margin-bottom: .8rem;
+  background-color: #E0C094;
+  font-size: larger;
+  line-height: 3.3rem
+}
+
+.fruit_data_list{
+  list-style-type: none;
+}
+
+.fruit_data_list li{
+  font-size: larger;
+}
