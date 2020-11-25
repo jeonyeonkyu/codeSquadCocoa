@@ -1,5 +1,3 @@
-
-//width : 399, height: 319 가 최대치로 잡는다
 class Model {
   constructor() {
     this.village = [];
@@ -8,76 +6,75 @@ class Model {
 
   init() {
     this.createVillage();
-    // this.createVillageForm();
-    // this.shuffleToVillage();
   }
 
-  checkRandom() {
+  checkRandom() { //50%의 확률
     return Math.round(Math.random());
   }
-
 
   getRandomInt(min, max) {
     return Math.round(Math.random() * (max - min)) + min;
   }
 
-  createVillage() {
-    let numToBeName = 0;
+  getVillageWidth(width) { // width는 큰 마을이 4개가 있다는 전제 하에 (마을 지도/4 === 399px)의 랜덤한 크기(너무 작지 않게)
+    let randomWidth = Math.random();
+    if (randomWidth < 0.5) {
+      randomWidth += 0.5;
+    }
+    return randomWidth * width;
+  }
 
-    const villageDepth = (height, width, mailbox) => {
+  getVillageHeight(height) { // height는 큰 마을이 4개가 있다는 전제 하에 (마을 지도/4 === 319px)의 랜덤한 크기(너무 작지 않게)
+    let randomHeight = Math.random();
+    if (randomHeight < 0.5) {
+      randomHeight += 0.5;
+    }
+    return randomHeight * height;
+  }
+
+  getRandomMailbox() { //마을은 25% 확률로 우체통을 가질 수 있도록 함 크기는 20~29px
+    const mailbox = { count: 0, size: 0 };
+    if (this.checkRandom() && this.checkRandom()) {
+      mailbox.count = 1;
+      mailbox.size = Math.floor(Math.random() * 10) + 20
+    }
+    return mailbox;
+  }
+
+  createVillage() { //village모델 만들기
+    let numToBeName = 0;
+    const villageDepth = (width, height, mailbox) => {
       const village = {
         'name': String.fromCharCode((numToBeName++) + 65),
-        'height': height,
-        'width': width,
+        'width': Math.floor(width),
+        'height': Math.floor(height),
         'mailbox': mailbox,
         'child': []
       }
 
-      if (this.checkRandom() && numToBeName < 17) {
-        let randomInt = this.getRandomInt(1, 2);
+      if (this.checkRandom() && numToBeName < 17) { //numToBeName은 알파벳 Z를 최대한 넘기지 않는 확률까지.. 
+        const randomInt = this.getRandomInt(1, 2);
         for (let i = 0; i < randomInt; i++) {
-          village.child.push(villageDepth(1, 1, 1));
+          let villageWidth = this.getVillageWidth(width);
+          let villageHeight = this.getVillageHeight(height);
+          if(randomInt > 1){
+            villageWidth /= randomInt;
+            villageHeight /= randomInt;
+          }
+          
+          if (villageWidth > 30 && villageHeight > 30) {
+            village.child.push(villageDepth(villageWidth, villageHeight, this.getRandomMailbox()));
+          }
         }
       }
       return village;
     }
 
     for (let i = 0; i < 4; i++) {
-      this.village[i] = villageDepth(2, 2, 2);
+      this.village[i] = villageDepth(this.getVillageWidth(399), this.getVillageHeight(319), this.getRandomMailbox());
     }
   }
-
 }
 
 const model = new Model()
-console.dir(model.village,{depth:null});
-
-
-
-  // createVillageForm() {
-  //   let count = 0;
-  //   while (true) {
-  //     this.village[String.fromCharCode(count + 65)] = {
-  //       width: 0,
-  //       height: 0,
-  //       mailbox: {
-  //         count: 0,
-  //         size: 0
-  //       },
-  //       child: []
-  //     };
-  //     count++;
-  //     if (count >= 12) {
-  //       if (this.checkRandom()) {
-  //         break;
-  //       }
-  //     }
-  //   }
-  // }
-
-  // shuffleToVillage() {
-  //   Object.keys(this.village);
-  //   for (let key in this.village) {
-  //     console.log(`${JSON.stringify(key)} : ${JSON.stringify(this.village[key])}`)
-  //   }
-  // }
+console.dir(model.village, { depth: null });
