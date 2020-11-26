@@ -1,10 +1,6 @@
 class Model {
   constructor() {
     this.village = [];
-    this.init();
-  }
-
-  init() {
     this.createVillage();
   }
 
@@ -36,7 +32,7 @@ class Model {
     const mailbox = { count: 0, size: 0 };
     if (this.checkRandom() && this.checkRandom()) {
       mailbox.count = 1;
-      mailbox.size = Math.floor(Math.random() * 10) + 20
+      mailbox.size = Math.floor(Math.random() * 10) + 20;
     }
     return mailbox;
   }
@@ -45,15 +41,15 @@ class Model {
     let numToBeName = 0;
     const villageDepth = (width, height, mailbox) => {
       const village = {
-        'name': String.fromCharCode((numToBeName++) + 65),
-        'width': Math.floor(width),
-        'height': Math.floor(height),
-        'mailbox': mailbox,
-        'child': []
+        name: String.fromCharCode((numToBeName++) + 65),
+        width: Math.floor(width),
+        height: Math.floor(height),
+        mailbox: mailbox,
+        child: []
       }
 
       if (this.checkRandom()) {
-        const randomInt = this.getRandomInt(1, 2);
+        const randomInt = this.getRandomInt(1, 3);
         for (let i = 0; i < randomInt; i++) {
           let villageWidth = this.getVillageWidth(width);
           let villageHeight = this.getVillageHeight(height);
@@ -80,40 +76,110 @@ class Model {
 }
 
 class View {
-  constructor({ model }) {
+  constructor({ model, villageMap }) {
     this.model = model;
+    this.villageMap = villageMap;
+  }
+
+  run() {
+    this.showVillage();
   }
 
   showVillage() {
-    const villageModel = this.model.getVillage();
-    const getModelInKey = (villageModelIndex) => {
-      let template = `<div class="village" style="width:${villageModelIndex.width}px; height: ${villageModelIndex.height}px;">
-                        <span class="name">${villageModelIndex.name}</span>
-                        ${villageModelIndex['mailbox']['count'] ?
+    const villageArray = this.model.getVillage();
+    const getModelInKey = ({ width, height, name, mailbox, child }) => {
+      let template =
+        `<div class="village" style="width:${width}px; height: ${height}px;">
+        <span class="name">${name}</span>
+        ${mailbox.count ?
           `<img class="red_mailbox_img"src="https://user-images.githubusercontent.com/61257242/100299908-2aa79800-2fd8-11eb-9759-763be50517fb.png"
-                            alt="" style="width:${villageModelIndex.mailbox.size}px;height:${villageModelIndex.mailbox.size}px">` : ''}`
-                if (villageModelIndex.child) {
-                  villageModelIndex.child.forEach(ele => {
-                    template += getModelInKey(ele)
-                  })
-                }
+          alt="" style="width:${mailbox.size}px;height:${mailbox.size}px">` : ''}`
+      if (child) {
+        child.forEach(ele => {
+          template += getModelInKey(ele);
+        })
+      }
       template += `</div>`
       return template;
     }
 
     let villageTemplate = '';
-    villageModel.forEach(ele => {
+    villageArray.forEach(ele => {
       villageTemplate += getModelInKey(ele);
     })
-    document.querySelector('.village_map').innerHTML = villageTemplate;
+    this.villageMap.innerHTML = villageTemplate;
   }
 }
 
+class RedMailResultView {
+  constructor({ resultButton }) {
+    this.resultButton = resultButton;
+  }
+  run() {
+    this.initEvent();
+  }
 
-// console.dir(model.village, { depth: null });
+  initEvent() {
+    this.resultButton.addEventListener('click', this.confirmHandler);
+  }
+
+  confirmHandler = ({ target }) => {
+    const villageNodeArray = this.getVillageNodeHavingMailbox();
+    this.changeColorOfArray(villageNodeArray);
+    const villageModel = this.convertToModel(villageNodeArray);
+
+    target.nextElementSibling.firstElementChild.innerHTML =
+      `${this.getVillageName(villageModel)} 총 ${this.getVillageName(villageModel).length}개의 마을입니다`;
+    target.nextElementSibling.lastElementChild.innerHTML =
+      `우체통의 크기는 ${this.getSortedVillageName(villageModel)} 순 입니다`;
+  }
+
+  getVillageNodeHavingMailbox() {
+    const villageNodeArray = [];
+    const searchForDom = ([...parentNode]) => {
+      parentNode.forEach(ele => {
+        const child = ele.firstElementChild;
+        if (child && child.nextElementSibling && child.nextElementSibling.tagName === 'IMG') {
+          villageNodeArray.push(ele);
+        }
+        if (ele.tagName === 'DIV') {
+          searchForDom(ele.children);
+        }
+      })
+    }
+    searchForDom(document.body.children);
+    return villageNodeArray;
+  }
+
+  changeColorOfArray(villageNodeArray) {
+    villageNodeArray.forEach(ele => {
+      ele.style.border = '2px solid red';
+    })
+  }
+
+  convertToModel(villageNodeArray) {
+    return villageNodeArray.map(ele => {
+      return {
+        name: ele.firstElementChild.innerHTML,
+        size: ele.firstElementChild.nextElementSibling.style.width
+      }
+    })
+  }
+
+  getVillageName(villageModel) {
+    return villageModel.map(ele => ele.name);
+  }
+
+  getSortedVillageName([...villageModel]) { //sort 알고리즘 구현 해야함
+    return [...villageModel].sort((a, b) => b.size.substring(0, 2) - a.size.substring(0, 2)).map(ele => ele.name);
+  }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const model = new Model();
-  const view = new View({ model });
-  view.showVillage();
+  const view = new View({ model, villageMap: document.querySelector('.village_map') });
+  const redMailResultView = new RedMailResultView({ resultButton: document.querySelector('.red_mailbox_confirm') });
+
+  view.run();
+  redMailResultView.run();
 })
