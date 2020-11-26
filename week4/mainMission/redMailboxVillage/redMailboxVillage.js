@@ -88,15 +88,15 @@ class View {
     const villageModel = this.model.getVillage();
     const getModelInKey = (villageModelIndex) => {
       let template = `<div class="village" style="width:${villageModelIndex.width}px; height: ${villageModelIndex.height}px;">
-                        <span>${villageModelIndex.name}</span>
+                        <span class="name">${villageModelIndex.name}</span>
                         ${villageModelIndex['mailbox']['count'] ?
-          `<img src="https://user-images.githubusercontent.com/61257242/100299908-2aa79800-2fd8-11eb-9759-763be50517fb.png"
+          `<img class="red_mailbox_img"src="https://user-images.githubusercontent.com/61257242/100299908-2aa79800-2fd8-11eb-9759-763be50517fb.png"
                             alt="" style="width:${villageModelIndex.mailbox.size}px;height:${villageModelIndex.mailbox.size}px">` : ''}`
-      if (villageModelIndex.child) {
-        for (let i = 0; i < villageModelIndex.child.length; i++) {
-          template += getModelInKey(villageModelIndex.child[i])
-        }
-      }
+                if (villageModelIndex.child) {
+                  villageModelIndex.child.forEach(ele => {
+                    template += getModelInKey(ele)
+                  })
+                }
       template += `</div>`
       return template;
     }
