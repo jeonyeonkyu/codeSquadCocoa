@@ -52,16 +52,15 @@ class Model {
         'child': []
       }
 
-      if (this.checkRandom() && numToBeName < 17) { //numToBeName은 알파벳 Z를 최대한 넘기지 않는 확률까지.. 
+      if (this.checkRandom()) {
         const randomInt = this.getRandomInt(1, 2);
         for (let i = 0; i < randomInt; i++) {
           let villageWidth = this.getVillageWidth(width);
           let villageHeight = this.getVillageHeight(height);
-          if(randomInt > 1){
+          if (randomInt > 1) {
             villageWidth /= randomInt;
             villageHeight /= randomInt;
           }
-          
           if (villageWidth > 30 && villageHeight > 30) {
             village.child.push(villageDepth(villageWidth, villageHeight, this.getRandomMailbox()));
           }
@@ -70,11 +69,51 @@ class Model {
       return village;
     }
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 4; i++) { //제일 큰 마을이 4개라는 전제
       this.village[i] = villageDepth(this.getVillageWidth(399), this.getVillageHeight(319), this.getRandomMailbox());
     }
   }
+
+  getVillage() {
+    return [...this.village];
+  }
 }
 
-const model = new Model()
-console.dir(model.village, { depth: null });
+class View {
+  constructor({ model }) {
+    this.model = model;
+  }
+
+  showVillage() {
+    const villageModel = this.model.getVillage();
+    const getModelInKey = (villageModelIndex) => {
+      let template = `<div class="village" style="width:${villageModelIndex.width}px; height: ${villageModelIndex.height}px;">
+                        <span>${villageModelIndex.name}</span>
+                        ${villageModelIndex['mailbox']['count'] ?
+          `<img src="https://user-images.githubusercontent.com/61257242/100299908-2aa79800-2fd8-11eb-9759-763be50517fb.png"
+                            alt="" style="width:${villageModelIndex.mailbox.size}px;height:${villageModelIndex.mailbox.size}px">` : ''}`
+      if (villageModelIndex.child) {
+        for (let i = 0; i < villageModelIndex.child.length; i++) {
+          template += getModelInKey(villageModelIndex.child[i])
+        }
+      }
+      template += `</div>`
+      return template;
+    }
+
+    let villageTemplate = '';
+    villageModel.forEach(ele => {
+      villageTemplate += getModelInKey(ele);
+    })
+    document.querySelector('.village_map').innerHTML = villageTemplate;
+  }
+}
+
+
+// console.dir(model.village, { depth: null });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const model = new Model();
+  const view = new View({ model });
+  view.showVillage();
+})
