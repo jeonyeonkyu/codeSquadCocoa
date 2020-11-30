@@ -20,3 +20,28 @@
   padding: 0;
   border: 1px solid gray;
 }
+
+.game_view td.white{
+  background-color: white;
+}
+.game_view td.yellow{
+  background-color: yellow;
+}
+.game_view td.pink{
+  background-color: pink;
+}
+.game_view td.greenyellow{
+  background-color: greenyellow;
+}
+.game_view td.coral{
+  background-color: coral;
+}
+.game_view td.purple{
+  background-color: purple;
+}
+.game_view td.blue{
+  background-color: blue;
+}
+.game_view td.red{
+  background-color: red;
+}

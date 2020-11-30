@@ -1,7 +1,17 @@
 class TetrisModel {
   constructor() {
     this.model = Array.from({ length: 20 }, () =>
-      Array.from({ length: 10 }, () => 0));
+      Array.from({ length: 10 }, () => 1));
+    this.shape = [
+      { name: 0, color: 'white' },
+      { name: 1, pattern: [[1, 1], [1, 1]], color: 'yellow' },
+      { name: 2, pattern: [[0, 2, 0], [2, 2, 2]], color: 'pink' },
+      { name: 3, pattern: [[3, 3, 0], [0, 3, 3]], color: 'greenyellow' },
+      { name: 4, pattern: [[0, 4, 4], [4, 4, 0]], color: 'coral' },
+      { name: 5, pattern: [[5, 5, 5], [0, 0, 5]], color: 'purple' },
+      { name: 6, pattern: [[6, 6, 6], [6, 0, 0]], color: 'blue' },
+      { name: 7, pattern: [[7, 7, 7, 7]], color: 'red' }
+    ]
   }
 
   getModel() {
@@ -19,18 +29,14 @@ class RenderView {
     this.renderingFromModel();
   }
 
-  showGame() {
 
-  }
 
   renderingFromModel() {
-    const template = `<table>` + this.tetrisModel.getModel().map((tr, i) => 
+    const template = `<table>` + this.tetrisModel.getModel().map((tr, i) =>
       `<tr>
-     ${tr.map((td, j) => 
-        `<td>${td}</td>`
-      ).join('')}
+     ${tr.map((td, j) => `<td class="${this.tetrisModel.shape[td].color}"></td>`).join('')}
       </tr>`
-    ).join('') + `</table>`
+    ).join('') + `</table>`;
     this.gameView.innerHTML = template;
   }
 }
