@@ -1,7 +1,7 @@
 class TetrisModel {
   constructor() {
     this.model = Array.from({ length: 20 }, () =>
-      Array.from({ length: 10 }, () => 1));
+      Array.from({ length: 10 }, () => 0));
     this.shape = [
       { name: 0, color: 'white' },
       { name: 1, pattern: [[1, 1], [1, 1]], color: 'yellow' },
@@ -12,6 +12,15 @@ class TetrisModel {
       { name: 6, pattern: [[6, 6, 6], [6, 0, 0]], color: 'blue' },
       { name: 7, pattern: [[7, 7, 7, 7]], color: 'red' }
     ]
+  }
+
+  createBlock() {
+    const block = this.shape[Math.ceil(Math.random() * 7)].pattern;
+    block.forEach((tr, i) => {
+      tr.forEach((td, j) => {
+        this.model[i][j+3] = td;  
+      })
+    })
   }
 
   getModel() {
@@ -47,7 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const gameView = document.querySelector('.game_view');
   const renderView = new RenderView({ tetrisModel, gameView });
+  tetrisModel.createBlock();
   renderView.run();
+
 })
 
 
