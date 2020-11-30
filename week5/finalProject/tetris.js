@@ -35,7 +35,7 @@ class TetrisModel {
       {
         name: 5,
         pattern:
-          [[[5, 5, 5], [0, 0, 5], [0, 0, 0]]
+          [[[5, 5, 5], [0, 0, 5], [0, 0, 0]],
           [[0, 0, 5], [0, 0, 5], [0, 5, 5]],
           [[0, 0, 0], [5, 0, 0], [5, 5, 5]],
           [[5, 5, 0], [5, 0, 0], [5, 0, 0]]],
@@ -63,7 +63,6 @@ class TetrisModel {
   run() {
     const block = this.createBlock();
     this.puttingInModel(block);
-    this.goingDownBlock(block);
   }
 
   createBlock() {
@@ -72,6 +71,7 @@ class TetrisModel {
   }
 
   puttingInModel(block) {
+    console.log(block);
     block.forEach((tr, i) => {
       tr.forEach((td, j) => {
         this.model[i][j + 3] = td;
@@ -79,8 +79,15 @@ class TetrisModel {
     })
   }
 
-  goingDownBlock(block) {
-    
+  goingDownBlock() {
+    for (let i = this.model.length - 1; i >= 0; i--) {
+      this.model[i].forEach((td, j) => {
+        if (this.model[i + 1] && this.model[i + 1][j] === 0) {
+          this.model[i + 1][j] = td;
+          this.model[i][j] = 0;
+        }
+      })
+    }
   }
 
   getModel() {
@@ -96,6 +103,12 @@ class RenderView {
 
   run() {
     this.renderingFromModel();
+    this.movingGameStart();
+  }
+
+  down() {
+    this.tetrisModel.goingDownBlock();
+    this.renderingFromModel();
   }
 
   renderingFromModel() {
@@ -105,6 +118,14 @@ class RenderView {
       </tr>`
     ).join('') + `</table>`;
     this.gameView.innerHTML = template;
+  }
+
+  movingGameStart() {
+    const tick = () => {
+      this.down();
+      setTimeout(tick, 500);
+    }
+    tick();
   }
 }
 
