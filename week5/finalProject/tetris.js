@@ -3,9 +3,11 @@ class TetrisModel {
     this.model = Array.from({ length: 20 }, () =>
       Array.from({ length: 10 }, () => 0));
     this.isStopOk = true;
+    this.currentTopLeft = [-1, 3];
+    this.block = null;
     this.shape = [
       { name: 0, color: 'white' },
-      { name: 1, pattern: [[[1, 1], [1, 1]]], color: 'yellow' },
+      { name: 1, pattern: [[[0, 1, 1], [0, 1, 1], [0, 0, 0]]], color: 'yellow' },
       {
         name: 2,
         pattern:
@@ -55,15 +57,18 @@ class TetrisModel {
         name: 7,
         pattern:
           [[[0, 0, 0, 0], [7, 7, 7, 7], [0, 0, 0, 0], [0, 0, 0, 0]],
-          [[0, 0, 7, 0], [0, 0, 7, 0], [0, 0, 7, 0], [0, 0, 7, 0]]],
+          [[0, 0, 7, 0], [0, 0, 7, 0], [0, 0, 7, 0], [0, 0, 7, 0]],
+          [[0, 0, 0, 0], [0, 0, 0, 0], [7, 7, 7, 7], [0, 0, 0, 0]],
+          [[0, 7, 0, 0], [0, 7, 0, 0], [0, 7, 0, 0], [0, 7, 0, 0]]],
         color: 'red'
       }
     ]
   }
 
   run() {
-    const block = this.createBlock();
-    this.puttingInModel(block);
+    this.currentTopLeft = [-1, 3];
+    this.block = this.createBlock();
+    this.puttingInModel(this.block);
   }
 
   createBlock() {
@@ -80,22 +85,47 @@ class TetrisModel {
   }
 
   goingDownBlock() {
-    for (let i = this.model.length - 1; i >= 0; i--) {
-      for (let j = 0; j < this.model[i].length; j++) {
-        if (this.model[i + 1] && this.model[i + 1][j] === 0 && this.isStopOk) {
-          this.model[i + 1][j] = this.model[i][j];
-          this.model[i][j] = 0;
-        } else if (this.model[i + 1]) {
-          this.isStopOk = false;
-          this.model[i][j] = this.model[i][j]*-1;
-          break;
+    let isStopOk = true;
+    const activeBlocks = [];
+    let currentBlockShape = this.block;
+    for (let i = this.currentTopLeft[0]; i < this.currentTopLeft[0] + currentBlockShape.length; i++) { // 아래 블럭이 있으면
+      if (i < 0 || i >= 20) continue;
+      for (let j = this.currentTopLeft[1]; j < this.currentTopLeft[1] + currentBlockShape.length; j++) {
+        if (this.isActiveBlock(this.model[i][j])) { // 현재 움직이는 블럭이면
+          activeBlocks.push([i, j]);
+          if (this.isInvalidBlock(this.model[i + 1] && this.model[i + 1][j])) { //밑에 있는 라인으로 움직일 수 있는지 체크
+            isStopOk = false;
+          }
         }
       }
-      if (this.isStopOk === false) {
-        return;
+    }
+    if (!isStopOk) {
+      console.warn(11111)
+      console.log(activeBlocks)
+      activeBlocks.forEach(ele => {
+        this.model[ele[0]][ele[1]] *= -1;
+      });
+      console.table(this.model)
+      // checkRows(); // 지워질 줄 있나 확인
+      this.run();
+      return false;
+    } else if (isStopOk) {
+      for (let i = this.model.length - 1; i >= 0; i--) {
+        const tr = this.model[i];
+        tr.forEach((td, j) => {
+          if (td > 0 && this.model[i + 1] && this.model[i + 1][j] >= 0) {
+            this.model[i + 1][j] = td;
+            this.model[i][j] = 0;
+          }
+        });
       }
+      this.currentTopLeft = [this.currentTopLeft[0] + 1, this.currentTopLeft[1]];
+      return true;
     }
   }
+
+  isActiveBlock = value => (value > 0 && value < 10);
+  isInvalidBlock = value => (value === undefined || value < 0);
 
   getModel() {
     return [...this.model];
