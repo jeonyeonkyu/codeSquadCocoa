@@ -2,7 +2,6 @@ class TetrisModel {
   constructor() {
     this.model = Array.from({ length: 20 }, () =>
       Array.from({ length: 10 }, () => 0));
-    this.isStopOk = true;
     this.currentTopLeft = [-1, 3];
     this.block = null;
     this.shape = [
@@ -84,6 +83,10 @@ class TetrisModel {
     })
   }
 
+  isActiveBlock = value => (value > 0 && value < 10);
+
+  isInvalidBlock = value => (value === undefined || value < 0);
+
   goingDownBlock() {
     let isStopOk = true;
     const activeBlocks = [];
@@ -100,12 +103,11 @@ class TetrisModel {
       }
     }
     if (!isStopOk) {
-      console.warn(11111)
-      console.log(activeBlocks)
+      // console.log(activeBlocks)
       activeBlocks.forEach(ele => {
         this.model[ele[0]][ele[1]] *= -1;
       });
-      console.table(this.model)
+      // console.table(this.model)
       // checkRows(); // 지워질 줄 있나 확인
       this.run();
       return false;
@@ -123,9 +125,6 @@ class TetrisModel {
       return true;
     }
   }
-
-  isActiveBlock = value => (value > 0 && value < 10);
-  isInvalidBlock = value => (value === undefined || value < 0);
 
   getModel() {
     return [...this.model];
@@ -151,9 +150,9 @@ class RenderView {
   }
 
   renderingFromModel() {
-    const template = `<table>` + this.tetrisModel.getModel().map((tr, i) =>
+    const template = `<table>` + this.tetrisModel.getModel().map((tr) =>
       `<tr>
-     ${tr.map((td, j) => `<td class="${(this.tetrisModel.shape[Math.abs(td)]).color}"></td>`).join('')}
+     ${tr.map((td) => `<td class="${(this.tetrisModel.shape[Math.abs(td)]).color}"></td>`).join('')}
       </tr>`
     ).join('') + `</table>`;
     this.gameView.innerHTML = template;
@@ -170,12 +169,89 @@ class RenderView {
   }
 }
 
+class EventController {
+  constructor({ tetrisModel, renderView }) {
+    this.tetrisModel = tetrisModel;
+    this.renderView = renderView;
+    this.initEvent();
+  }
+
+  initEvent() {
+    document.addEventListener('keydown', this.moveLeftAndRightHandler);
+  }
+
+  moveLeftAndRightHandler = (event) => {
+    const left = -1;
+    const right = 1;
+    let way = 0;
+    if (event.code === 'ArrowLeft') {
+      way = left;
+    } else if (event.code === 'ArrowRight') {
+      way = right;
+    }
+    switch (event.code) {
+      case 'ArrowLeft': {
+        let isMoveOk = this.placeCheck(way);
+        if (isMoveOk) {
+          this.tetrisModel.currentTopLeft = [this.tetrisModel.currentTopLeft[0], this.tetrisModel.currentTopLeft[1] - 1];
+          this.tetrisModel.model.forEach((tr, i) => {
+            for (var j = 0; j < tr.length; j++) {
+              const td = tr[j];
+              if (this.tetrisModel.model[i][j - 1] === 0 && td > 0) {
+                this.tetrisModel.model[i][j - 1] = td;
+                this.tetrisModel.model[i][j] = 0;
+              }
+            }
+          });
+        }
+        this.renderView.renderingFromModel();
+        break;
+      }
+      case 'ArrowRight': {
+        let isMoveOk = this.placeCheck(way);
+        if (isMoveOk) {
+          this.tetrisModel.currentTopLeft = [this.tetrisModel.currentTopLeft[0], this.tetrisModel.currentTopLeft[1] + 1];
+          this.tetrisModel.model.forEach((tr, i) => {
+            for (var j = tr.length; j >= 0; j--) {
+              const td = tr[j];
+              if (this.tetrisModel.model[i][j + 1] === 0 && td > 0) {
+                this.tetrisModel.model[i][j + 1] = td;
+                this.tetrisModel.model[i][j] = 0;
+              }
+            }
+          });
+        }
+        this.renderView.renderingFromModel();
+        break;
+      }
+    }
+  }
+
+  placeCheck(way) {
+    let isMoveOk = true;
+    let currentBlockShape = this.tetrisModel.block;
+    for (let i = this.tetrisModel.currentTopLeft[0]; i < this.tetrisModel.currentTopLeft[0] + currentBlockShape.length; i++) { // 왼쪽 공간 체크
+      if (!isMoveOk) break;
+      for (let j = this.tetrisModel.currentTopLeft[1]; j < this.tetrisModel.currentTopLeft[1] + currentBlockShape.length; j++) {
+        if (!this.tetrisModel.model[i] || !this.tetrisModel.model[i][j]) continue;
+        if (this.tetrisModel.isActiveBlock(this.tetrisModel.model[i][j]) &&
+          this.tetrisModel.isInvalidBlock(this.tetrisModel.model[i] && this.tetrisModel.model[i][j + way])) {
+          isMoveOk = false;
+        }
+      }
+    }
+    return isMoveOk;
+  }
+
+
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const tetrisModel = new TetrisModel();
 
   const gameView = document.querySelector('.game_view');
   const renderView = new RenderView({ tetrisModel, gameView });
+  const eventController = new EventController({ tetrisModel, renderView })
   tetrisModel.run();
   renderView.run();
 
