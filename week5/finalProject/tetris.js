@@ -2,6 +2,7 @@ class TetrisModel {
   constructor() {
     this.model = Array.from({ length: 20 }, () =>
       Array.from({ length: 10 }, () => 0));
+    this.isStopOk = true;
     this.shape = [
       { name: 0, color: 'white' },
       { name: 1, pattern: [[[1, 1], [1, 1]]], color: 'yellow' },
@@ -71,7 +72,6 @@ class TetrisModel {
   }
 
   puttingInModel(block) {
-    console.log(block);
     block.forEach((tr, i) => {
       tr.forEach((td, j) => {
         this.model[i][j + 3] = td;
@@ -81,12 +81,19 @@ class TetrisModel {
 
   goingDownBlock() {
     for (let i = this.model.length - 1; i >= 0; i--) {
-      this.model[i].forEach((td, j) => {
-        if (this.model[i + 1] && this.model[i + 1][j] === 0) {
-          this.model[i + 1][j] = td;
+      for (let j = 0; j < this.model[i].length; j++) {
+        if (this.model[i + 1] && this.model[i + 1][j] === 0 && this.isStopOk) {
+          this.model[i + 1][j] = this.model[i][j];
           this.model[i][j] = 0;
+        } else if (this.model[i + 1]) {
+          this.isStopOk = false;
+          this.model[i][j] = this.model[i][j]*-1;
+          break;
         }
-      })
+      }
+      if (this.isStopOk === false) {
+        return;
+      }
     }
   }
 
@@ -99,6 +106,8 @@ class RenderView {
   constructor({ tetrisModel, gameView }) {
     this.tetrisModel = tetrisModel;
     this.gameView = gameView;
+    this.timeClear = null;
+    this.timeout = 100;
   }
 
   run() {
@@ -114,18 +123,20 @@ class RenderView {
   renderingFromModel() {
     const template = `<table>` + this.tetrisModel.getModel().map((tr, i) =>
       `<tr>
-     ${tr.map((td, j) => `<td class="${this.tetrisModel.shape[td].color}"></td>`).join('')}
+     ${tr.map((td, j) => `<td class="${(this.tetrisModel.shape[Math.abs(td)]).color}"></td>`).join('')}
       </tr>`
     ).join('') + `</table>`;
     this.gameView.innerHTML = template;
   }
 
   movingGameStart() {
-    const tick = () => {
+    this.timeClear = setTimeout(() => {
+      if (this.timeClear) {
+        clearTimeout(this.timeClear)
+      }
       this.down();
-      setTimeout(tick, 500);
-    }
-    tick();
+      setTimeout(() => { this.movingGameStart() }, this.timeout);
+    }, this.timeout)
   }
 }
 
@@ -138,4 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
   tetrisModel.run();
   renderView.run();
 
+
+  document.querySelector('.time_clear').addEventListener('click', () => clearTimeout(renderView.timeClear))
 })
