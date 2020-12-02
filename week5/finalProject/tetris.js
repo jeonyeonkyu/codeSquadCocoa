@@ -7,13 +7,15 @@ class TetrisModel {
     this.currentShapeIndex = 0;
     this.shape = [
       { name: 0, color: 'white' },
-      { name: 1,
+      {
+        name: 1,
         pattern:
-         [[[0, 1, 1], [0, 1, 1], [0, 0, 0]],
-         [[0, 1, 1], [0, 1, 1], [0, 0, 0]],
-         [[0, 1, 1], [0, 1, 1], [0, 0, 0]],
-         [[0, 1, 1], [0, 1, 1], [0, 0, 0]]],
-          color: 'yellow' },
+          [[[0, 1, 1], [0, 1, 1], [0, 0, 0]],
+          [[0, 1, 1], [0, 1, 1], [0, 0, 0]],
+          [[0, 1, 1], [0, 1, 1], [0, 0, 0]],
+          [[0, 1, 1], [0, 1, 1], [0, 0, 0]]],
+        color: 'yellow'
+      },
       {
         name: 2,
         pattern:
@@ -111,12 +113,10 @@ class TetrisModel {
       }
     }
     if (!isStopOk) {
-      // console.log(activeBlocks)
       activeBlocks.forEach(ele => {
         this.model[ele[0]][ele[1]] *= -1;
       });
-      // console.table(this.model)
-      // checkRows(); // 지워질 줄 있나 확인
+      this.clearRows(); 
       this.run();
       return false;
     } else if (isStopOk) {
@@ -134,6 +134,37 @@ class TetrisModel {
     }
   }
 
+  clearRows() { //가득 찬 줄 있으면 지우고 새로 그려주기
+    const fullRows = [];
+    for (let i = 0; i < this.model.length; i++) {
+      let count = 0;
+      for (let j = 0; j < this.model[i].length; j++) {
+        if (this.model[i][j] < 0) {
+          count++;
+        }
+      }
+      if (count === 10) {
+        fullRows.push(i);
+      }
+    }
+
+    fullRows.forEach(ele => {
+      this.model.splice(ele, 1);
+      this.model.unshift(Array.from({ length: 10 }, () => 0));
+    })
+  }
+
+  checkRows(){
+    if(this.model[4][3] < 0 || this.model[4][4] < 0 || this.model[4][5] < 0){
+      if(this.model[3][3] !== 0 || this.model[3][4] !== 0 || this.model[3][5] !== 0){
+        if(this.model[2][3] !== 0 || this.model[2][4] !== 0 || this.model[2][5] !== 0){
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   getModel() {
     return [...this.model];
   }
@@ -144,7 +175,7 @@ class RenderView {
     this.tetrisModel = tetrisModel;
     this.gameView = gameView;
     this.timeClear = null;
-    this.timeout = 500;
+    this.timer = 500;
   }
 
   run() {
@@ -167,13 +198,12 @@ class RenderView {
   }
 
   movingGameStart() {
-    this.timeClear = setTimeout(() => {
-      if (this.timeClear) {
-        clearTimeout(this.timeClear)
-      }
+      this.timeClear = setTimeout(() => { this.movingGameStart() }, this.timer);
+      if(this.tetrisModel.checkRows()){
+        clearTimeout(this.timeClear);
+        alert('game over');
+      };
       this.down();
-      setTimeout(() => { this.movingGameStart() }, this.timeout);
-    }, this.timeout)
   }
 }
 
@@ -181,14 +211,12 @@ class ArrowKeysEventController {
   constructor({ tetrisModel, renderView }) {
     this.tetrisModel = tetrisModel;
     this.renderView = renderView;
-    this.initEvent();
   }
 
   initEvent() {
     document.addEventListener('keydown', this.moveLeftAndRightHandler);
     document.addEventListener('keydown', this.turnHandler);
     document.addEventListener('keydown', this.downHandler);
-
   }
 
   moveLeftAndRightHandler = (event) => {
@@ -267,16 +295,16 @@ class ArrowKeysEventController {
         if (!isTurnOk) break;
         if (i === 20) isTurnOk = false;;
         for (let j = this.tetrisModel.currentTopLeft[1]; j < this.tetrisModel.currentTopLeft[1] + currentBlockShape.length; j++) {
-          if (!this.tetrisModel.model[i]) continue;  
+          if (!this.tetrisModel.model[i]) continue;
           if (nextBlockShape[i - this.tetrisModel.currentTopLeft[0]][j - this.tetrisModel.currentTopLeft[1]] !== 0 &&
-            this.tetrisModel.isInvalidBlock(this.tetrisModel.model[i] && this.tetrisModel.model[i][j]) ) {
+            this.tetrisModel.isInvalidBlock(this.tetrisModel.model[i] && this.tetrisModel.model[i][j])) {
             isTurnOk = false;
           }
         }
       }
       if (isTurnOk) {
         while (this.tetrisModel.currentTopLeft[0] < 0) {
-         this.tetrisModel.goingDownBlock();
+          this.tetrisModel.goingDownBlock();
         }
         for (let i = this.tetrisModel.currentTopLeft[0]; i < this.tetrisModel.currentTopLeft[0] + currentBlockShape.length; i++) { // 돌린 이후 공간 체크
           for (let j = this.tetrisModel.currentTopLeft[1]; j < this.tetrisModel.currentTopLeft[1] + currentBlockShape.length; j++) {
@@ -304,7 +332,7 @@ class ArrowKeysEventController {
         break;
       }
       case 'Space': {
-        while (this.tetrisModel.goingDownBlock()) { this.renderView.renderingFromModel();};
+        while (this.tetrisModel.goingDownBlock()) { this.renderView.renderingFromModel(); };
         break;
       }
     }
@@ -320,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const arrowKeysEventController = new ArrowKeysEventController({ tetrisModel, renderView })
   tetrisModel.run();
   renderView.run();
-
+  arrowKeysEventController.initEvent();
 
   document.querySelector('.time_clear').addEventListener('click', () => clearTimeout(renderView.timeClear))
 })
