@@ -18,30 +18,30 @@
   width: 40px;
   height: 39px;
   padding: 0;
-  border: 1px solid gray;
+  border: 1px solid rgb(53, 53, 53);
 }
 
 .game_view td.white{
   background-color: white;
 }
 .game_view td.yellow{
-  background-color: yellow;
+  background-color: rgb(255, 255, 49);
 }
 .game_view td.pink{
-  background-color: pink;
+  background-color: rgb(255, 168, 183);
 }
 .game_view td.greenyellow{
-  background-color: greenyellow;
+  background-color: rgb(149, 255, 79);
 }
 .game_view td.coral{
-  background-color: coral;
+  background-color: rgb(255, 147, 108);
 }
 .game_view td.purple{
-  background-color: purple;
+  background-color: rgb(211, 128, 236);
 }
 .game_view td.blue{
-  background-color: blue;
+  background-color: rgb(145, 147, 253);
 }
 .game_view td.red{
-  background-color: red;
+  background-color: rgb(253, 95, 95);
 }
