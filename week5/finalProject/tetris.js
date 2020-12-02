@@ -116,7 +116,7 @@ class TetrisModel {
       activeBlocks.forEach(ele => {
         this.model[ele[0]][ele[1]] *= -1;
       });
-      this.clearRows(); 
+      this.clearRows();
       this.run();
       return false;
     } else if (isStopOk) {
@@ -154,10 +154,10 @@ class TetrisModel {
     })
   }
 
-  checkRows(){
-    if(this.model[4][3] < 0 || this.model[4][4] < 0 || this.model[4][5] < 0){
-      if(this.model[3][3] !== 0 || this.model[3][4] !== 0 || this.model[3][5] !== 0){
-        if(this.model[2][3] !== 0 || this.model[2][4] !== 0 || this.model[2][5] !== 0){
+  checkRows() {
+    if (this.model[4][3] < 0 || this.model[4][4] < 0 || this.model[4][5] < 0) {
+      if (this.model[3][3] !== 0 || this.model[3][4] !== 0 || this.model[3][5] !== 0) {
+        if (this.model[2][3] !== 0 || this.model[2][4] !== 0 || this.model[2][5] !== 0) {
           return true;
         }
       }
@@ -171,11 +171,14 @@ class TetrisModel {
 }
 
 class RenderView {
-  constructor({ tetrisModel, gameView }) {
+  constructor({ tetrisModel, gameView, gameStartButton, gameStopButton }) {
     this.tetrisModel = tetrisModel;
+    this.tetrisModel.run();
     this.gameView = gameView;
+    this.gameStartButton = gameStartButton.addEventListener('click', () => this.run());
+    this.gameStopButton = gameStopButton.addEventListener('click', () => clearTimeout(this.timeClear));
     this.timeClear = null;
-    this.timer = 500;
+    this.timer = 1000;
   }
 
   run() {
@@ -198,12 +201,12 @@ class RenderView {
   }
 
   movingGameStart() {
-      this.timeClear = setTimeout(() => { this.movingGameStart() }, this.timer);
-      if(this.tetrisModel.checkRows()){
-        clearTimeout(this.timeClear);
-        alert('game over');
-      };
-      this.down();
+    this.timeClear = setTimeout(() => { this.movingGameStart() }, this.timer);
+    if (this.tetrisModel.checkRows()) {
+      clearTimeout(this.timeClear);
+      alert('game over');
+    };
+    this.down();
   }
 }
 
@@ -344,11 +347,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const tetrisModel = new TetrisModel();
 
   const gameView = document.querySelector('.game_view');
-  const renderView = new RenderView({ tetrisModel, gameView });
+  const gameStartButton = document.querySelector('.start_game');
+  const gameStopButton = document.querySelector('.game_stop');
+  const renderView = new RenderView({ tetrisModel, gameView, gameStartButton, gameStopButton });
   const arrowKeysEventController = new ArrowKeysEventController({ tetrisModel, renderView })
-  tetrisModel.run();
-  renderView.run();
+  // tetrisModel.run();
+  // renderView.run();
   arrowKeysEventController.initEvent();
 
-  document.querySelector('.time_clear').addEventListener('click', () => clearTimeout(renderView.timeClear))
+  document.querySelector('.game_stop').addEventListener('click', () => clearTimeout(renderView.timeClear))
 })
