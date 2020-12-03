@@ -172,7 +172,7 @@ class TetrisModel {
 
   updateScore() {
     this.score *= 2;
-    if(this.score === 0){
+    if (this.score === 0) {
       this.score = 2;
     }
   }
@@ -183,15 +183,21 @@ class TetrisModel {
 }
 
 class RenderView {
-  constructor({ tetrisModel, gameView, gameStartButton, gameStopButton, scoreBox}) {
+  constructor({ tetrisModel, gameView, gameStartButton, gameStopButton, scoreBox }) {
     this.tetrisModel = tetrisModel;
     this.tetrisModel.run();
     this.gameView = gameView;
     this.scoreBox = scoreBox;
-    this.gameStartButton = gameStartButton.addEventListener('click', () => this.run());
-    this.gameStopButton = gameStopButton.addEventListener('click', () => clearTimeout(this.timeClear));
+    this.gameStartButton = gameStartButton;
+    this.gameStopButton = gameStopButton;
     this.timeClear = null;
     this.timer = 1000;
+    this.initEvent();
+  }
+
+  initEvent(){
+    this.gameStartButton.addEventListener('click', this.startButtonClickHandler);
+    this.gameStopButton.addEventListener('click', this.stopButtonClickHandler);
   }
 
   run() {
@@ -217,11 +223,27 @@ class RenderView {
     this.timeClear = setTimeout(() => { this.movingGameStart() }, this.timer);
     if (this.tetrisModel.checkRows()) {
       clearTimeout(this.timeClear);
-      alert('game over');
+      alert(`game over 점수는 ${this.tetrisModel.score} 입니다`);
     };
     this.down();
+
     this.scoreBox.innerHTML = this.tetrisModel.score;
   }
+
+  startButtonClickHandler = (event) => {
+    this.run();
+    console.log(this.gameStartButton)
+    console.log(this.gameStopButton);
+    this.gameStopButton.style.display = 'inline-block';
+    event.target.replaceWith(this.gameStopButton);
+  }
+
+  stopButtonClickHandler = (event) => {
+    clearTimeout(this.timeClear);
+    event.target.replaceWith(this.gameStartButton);
+  }
+
+
 }
 
 class ArrowKeysEventController {
