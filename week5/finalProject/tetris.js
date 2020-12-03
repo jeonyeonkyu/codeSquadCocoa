@@ -72,6 +72,7 @@ class TetrisModel {
       Array.from({ length: 10 }, () => 0));
     this.currentTopLeft = [0, 3];
     this.block = null;
+    this.nextBlock = this.createBlock();
     this.currentShapeIndex = 0;
     this.score = 0;
   }
@@ -79,7 +80,8 @@ class TetrisModel {
   run() {
     this.currentTopLeft = [0, 3];
     this.currentShapeIndex = 0;
-    this.block = this.createBlock();
+    this.block = this.nextBlock;
+    this.nextBlock = this.createBlock();
     this.puttingInModel(this.block[0]);
   }
 
@@ -186,13 +188,14 @@ class TetrisModel {
 }
 
 class RenderView {
-  constructor({ tetrisModel, gameView, gameStartButton, gameStopButton, scoreBox }) {
+  constructor({ tetrisModel, gameView, gameStartButton, gameStopButton, scoreBox, nextBlock }) {
     this.tetrisModel = tetrisModel;
     this.tetrisModel.run();
     this.gameView = gameView;
-    this.scoreBox = scoreBox;
     this.gameStartButton = gameStartButton;
     this.gameStopButton = gameStopButton;
+    this.scoreBox = scoreBox;
+    this.nextBlock = nextBlock;
     this.timeClear = null;
     this.timer = 1000;
   }
@@ -210,6 +213,7 @@ class RenderView {
   down() {
     this.tetrisModel.goingDownBlock();
     this.renderingFromModel();
+    this.renderingFromNextBlock();
   }
 
   renderingFromModel() {
@@ -219,6 +223,18 @@ class RenderView {
       </tr>`
     ).join('') + `</table>`;
     this.gameView.innerHTML = template;
+  }
+
+  renderingFromNextBlock() {
+    const { nextBlock } = this.tetrisModel;
+    const template = `<table>${nextBlock[0].length === 3 ? `<tr><td></td><td></td><td></td><td></td></tr>` : ''}`
+     + nextBlock[0].map(tr =>
+      `<tr>
+      ${tr.map((td) => `<td class="${(tetrisShape[Math.abs(td)]).color}"></td>`).join('')}
+      ${nextBlock[0].length === 3 ? `<td></td>` : ''}
+      </tr>`
+    ).join('') + `</table>`;
+    this.nextBlock.innerHTML = template;
   }
 
   movingGameStart() {
@@ -391,7 +407,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameStartButton = document.querySelector('.start_game');
   const gameStopButton = document.querySelector('.game_stop');
   const scoreBox = document.querySelector('.score');
-  const renderView = new RenderView({ tetrisModel, gameView, gameStartButton, gameStopButton, scoreBox });
+  const nextBlock = document.querySelector('.next_block');
+  const renderView = new RenderView({ tetrisModel, gameView, gameStartButton, gameStopButton, scoreBox, nextBlock });
   const arrowKeysEventController = new ArrowKeysEventController({ tetrisModel, renderView });
   renderView.initEvent();
   arrowKeysEventController.initEvent();
