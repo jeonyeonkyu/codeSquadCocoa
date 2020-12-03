@@ -63,7 +63,7 @@ const tetrisShape = [
       [[0, 7, 0, 0], [0, 7, 0, 0], [0, 7, 0, 0], [0, 7, 0, 0]]],
     color: 'red'
   }
-]
+];
 
 
 class TetrisModel {
@@ -101,12 +101,13 @@ class TetrisModel {
   isInvalidBlock = value => (value === undefined || value < 0);
 
   goingDownBlock() {
+    const [xPos, yPos] = this.currentTopLeft;
     let isStopOk = true;
     const activeBlocks = [];
     let currentBlockShape = this.block[0];
-    for (let i = this.currentTopLeft[0]; i < this.currentTopLeft[0] + currentBlockShape.length; i++) { // 아래 블럭이 있으면
+    for (let i = xPos; i < xPos + currentBlockShape.length; i++) { // 아래 블럭이 있으면
       if (i < 0 || i >= 20) continue;
-      for (let j = this.currentTopLeft[1]; j < this.currentTopLeft[1] + currentBlockShape.length; j++) {
+      for (let j = yPos; j < yPos + currentBlockShape.length; j++) {
         if (this.isActiveBlock(this.model[i][j])) { // 현재 움직이는 블럭이면
           activeBlocks.push([i, j]);
           if (this.isInvalidBlock(this.model[i + 1] && this.model[i + 1][j])) { //밑에 있는 라인으로 움직일 수 있는지 체크
@@ -132,7 +133,7 @@ class TetrisModel {
           }
         });
       }
-      this.currentTopLeft = [this.currentTopLeft[0] + 1, this.currentTopLeft[1]];
+      this.currentTopLeft = [xPos + 1, yPos];
       return true;
     }
   }
@@ -196,7 +197,7 @@ class RenderView {
     this.timer = 1000;
   }
 
-  initEvent(){
+  initEvent() {
     this.gameStartButton.addEventListener('click', this.startButtonClickHandler);
     this.gameStopButton.addEventListener('click', this.stopButtonClickHandler);
   }
@@ -233,8 +234,6 @@ class RenderView {
 
   startButtonClickHandler = (event) => {
     this.run();
-    console.log(this.gameStartButton)
-    console.log(this.gameStopButton);
     this.gameStopButton.style.display = 'inline-block';
     event.target.replaceWith(this.gameStopButton);
   }
@@ -266,17 +265,18 @@ class ArrowKeysEventController {
     } else if (event.code === 'ArrowRight') {
       way = right;
     }
+    const { model, currentTopLeft } = this.tetrisModel;
     switch (event.code) {
       case 'ArrowLeft': {
         let isMoveOk = this.placeCheck(way);
         if (isMoveOk) {
-          this.tetrisModel.currentTopLeft = [this.tetrisModel.currentTopLeft[0], this.tetrisModel.currentTopLeft[1] - 1];
-          this.tetrisModel.model.forEach((tr, i) => {
-            for (var j = 0; j < tr.length; j++) {
+          currentTopLeft[1] -= 1;
+          model.forEach((tr, i) => {
+            for (let j = 0; j < tr.length; j++) {
               const td = tr[j];
-              if (this.tetrisModel.model[i][j - 1] === 0 && td > 0) {
-                this.tetrisModel.model[i][j - 1] = td;
-                this.tetrisModel.model[i][j] = 0;
+              if (model[i][j - 1] === 0 && td > 0) {
+                model[i][j - 1] = td;
+                model[i][j] = 0;
               }
             }
           });
@@ -287,13 +287,13 @@ class ArrowKeysEventController {
       case 'ArrowRight': {
         let isMoveOk = this.placeCheck(way);
         if (isMoveOk) {
-          this.tetrisModel.currentTopLeft = [this.tetrisModel.currentTopLeft[0], this.tetrisModel.currentTopLeft[1] + 1];
-          this.tetrisModel.model.forEach((tr, i) => {
-            for (var j = tr.length; j >= 0; j--) {
+          currentTopLeft[1] += 1;
+          model.forEach((tr, i) => {
+            for (let j = tr.length - 1; j >= 0; j--) {
               const td = tr[j];
-              if (this.tetrisModel.model[i][j + 1] === 0 && td > 0) {
-                this.tetrisModel.model[i][j + 1] = td;
-                this.tetrisModel.model[i][j] = 0;
+              if (model[i][j + 1] === 0 && td > 0) {
+                model[i][j + 1] = td;
+                model[i][j] = 0;
               }
             }
           });
@@ -306,13 +306,15 @@ class ArrowKeysEventController {
 
   placeCheck(way) { //왼쪽 or 오른쪽 공간체크하기
     let isMoveOk = true;
-    let currentBlockShape = this.tetrisModel.block[0];
-    for (let i = this.tetrisModel.currentTopLeft[0]; i < this.tetrisModel.currentTopLeft[0] + currentBlockShape.length; i++) {
+    const { block, currentTopLeft, model, isActiveBlock, isInvalidBlock } = this.tetrisModel;
+    const currentBlockShape = block[0];
+    const [xPos, yPos] = currentTopLeft;
+    for (let i = xPos; i < xPos + currentBlockShape.length; i++) {
       if (!isMoveOk) break;
-      for (let j = this.tetrisModel.currentTopLeft[1]; j < this.tetrisModel.currentTopLeft[1] + currentBlockShape.length; j++) {
-        if (!this.tetrisModel.model[i]) continue;
-        if (this.tetrisModel.isActiveBlock(this.tetrisModel.model[i][j]) &&
-          this.tetrisModel.isInvalidBlock(this.tetrisModel.model[i] && this.tetrisModel.model[i][j + way])) {
+      for (let j = yPos; j < yPos + currentBlockShape.length; j++) {
+        if (!model[i]) continue;
+        if (isActiveBlock(model[i][j]) &&
+          isInvalidBlock(model[i] && model[i][j + way])) {
           isMoveOk = false;
         }
       }
@@ -324,36 +326,40 @@ class ArrowKeysEventController {
   turnHandler = (event) => { // 도형 회전
     if (event.code === 'ArrowUp') {
       let isTurnOk = true;
-      let currentShapeIndex = this.tetrisModel.currentShapeIndex;
-      let currentBlockShape = this.tetrisModel.block[currentShapeIndex] //이거 바꿔줘야함
+      const { currentShapeIndex, currentTopLeft, block, model, isInvalidBlock, goingDownBlock } = this.tetrisModel;
+      const currentBlockShape = block[currentShapeIndex]
       const nextShapeIndex = currentShapeIndex === 3 ? 0 : currentShapeIndex + 1;
-      const nextBlockShape = this.tetrisModel.block[nextShapeIndex];
+      const nextBlockShape = block[nextShapeIndex];
 
-      for (let i = this.tetrisModel.currentTopLeft[0]; i < this.tetrisModel.currentTopLeft[0] + currentBlockShape.length; i++) { // 돌린 이후 공간 체크
+      const [xPos, yPos] = currentTopLeft
+
+      for (let i = xPos; i < xPos + currentBlockShape.length; i++) { // 돌린 이후 공간 체크
         if (!isTurnOk) break;
-        if (i === 20) isTurnOk = false;;
-        for (let j = this.tetrisModel.currentTopLeft[1]; j < this.tetrisModel.currentTopLeft[1] + currentBlockShape.length; j++) {
-          if (!this.tetrisModel.model[i]) continue;
-          if (nextBlockShape[i - this.tetrisModel.currentTopLeft[0]][j - this.tetrisModel.currentTopLeft[1]] !== 0 &&
-            this.tetrisModel.isInvalidBlock(this.tetrisModel.model[i] && this.tetrisModel.model[i][j])) {
+        if (i === 20) isTurnOk = false;
+        for (let j = yPos; j < yPos + currentBlockShape.length; j++) {
+          if (!model[i]) {
+            continue;
+          }
+          if (nextBlockShape[i - xPos][j - yPos] !== 0 &&
+            isInvalidBlock(model[i] && model[i][j])) {
             isTurnOk = false;
           }
         }
       }
       if (isTurnOk) {
-        while (this.tetrisModel.currentTopLeft[0] < 0) {
-          this.tetrisModel.goingDownBlock();
+        while (xPos < 0) {
+          goingDownBlock();
         }
-        for (let i = this.tetrisModel.currentTopLeft[0]; i < this.tetrisModel.currentTopLeft[0] + currentBlockShape.length; i++) { // 돌린 이후 공간 체크
-          for (let j = this.tetrisModel.currentTopLeft[1]; j < this.tetrisModel.currentTopLeft[1] + currentBlockShape.length; j++) {
-            if (!this.tetrisModel.model[i]) continue;
-            let nextBlockShapeCell = nextBlockShape[i - this.tetrisModel.currentTopLeft[0]][j - this.tetrisModel.currentTopLeft[1]];
-            if (nextBlockShapeCell !== 0 && this.tetrisModel.model[i][j] === 0) {
+        for (let i = xPos; i < xPos + currentBlockShape.length; i++) { // 돌린 이후 공간 체크
+          for (let j = yPos; j < yPos + currentBlockShape.length; j++) {
+            if (!model[i]) continue;
+            let nextBlockShapeCell = nextBlockShape[i - xPos][j - yPos];
+            if (nextBlockShapeCell !== 0 && model[i][j] === 0) {
               // 다음 모양은 색깔이 있는데 현재칸이 데이터 및 색깔이 없으면
-              this.tetrisModel.model[i][j] = this.tetrisModel.block[1][1][2]; //데이터 및 색깔 부여
-            } else if (nextBlockShapeCell === 0 && this.tetrisModel.model[i][j] && this.tetrisModel.model[i][j] >= 0) {
+              model[i][j] = block[1][1][2]; //데이터 및 색깔 부여
+            } else if (nextBlockShapeCell === 0 && model[i][j] && model[i][j] >= 0) {
               // 다음 모양은 색깔이 없는데 현재칸이 데이터 및 색깔이 있으면
-              this.tetrisModel.model[i][j] = 0;
+              model[i][j] = 0;
             }
           }
         }
