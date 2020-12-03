@@ -1,3 +1,71 @@
+const tetrisShape = [
+  { name: 0, color: 'white' },
+  {
+    name: 1,
+    pattern:
+      [[[0, 1, 1], [0, 1, 1], [0, 0, 0]],
+      [[0, 1, 1], [0, 1, 1], [0, 0, 0]],
+      [[0, 1, 1], [0, 1, 1], [0, 0, 0]],
+      [[0, 1, 1], [0, 1, 1], [0, 0, 0]]],
+    color: 'yellow'
+  },
+  {
+    name: 2,
+    pattern:
+      [[[0, 2, 0], [2, 2, 2], [0, 0, 0]],
+      [[0, 2, 0], [0, 2, 2], [0, 2, 0]],
+      [[0, 0, 0], [2, 2, 2], [0, 2, 0]],
+      [[0, 2, 0], [2, 2, 0], [0, 2, 0]]],
+    color: 'pink'
+  },
+  {
+    name: 3,
+    pattern:
+      [[[3, 3, 0], [0, 3, 3], [0, 0, 0]],
+      [[0, 0, 3], [0, 3, 3], [0, 3, 0]],
+      [[3, 3, 0], [0, 3, 3], [0, 0, 0]],
+      [[0, 0, 3], [0, 3, 3], [0, 3, 0]]],
+    color: 'greenyellow'
+  },
+  {
+    name: 4,
+    pattern:
+      [[[0, 4, 4], [4, 4, 0], [0, 0, 0]],
+      [[0, 4, 0], [0, 4, 4], [0, 0, 4]],
+      [[0, 4, 4], [4, 4, 0], [0, 0, 0]],
+      [[0, 4, 0], [0, 4, 4], [0, 0, 4]]],
+    color: 'coral'
+  },
+  {
+    name: 5,
+    pattern:
+      [[[5, 5, 5], [0, 0, 5], [0, 0, 0]],
+      [[0, 0, 5], [0, 0, 5], [0, 5, 5]],
+      [[0, 0, 0], [5, 0, 0], [5, 5, 5]],
+      [[5, 5, 0], [5, 0, 0], [5, 0, 0]]],
+    color: 'purple'
+  },
+  {
+    name: 6,
+    pattern:
+      [[[6, 6, 6], [6, 0, 0], [0, 0, 0]],
+      [[0, 6, 6], [0, 0, 6], [0, 0, 6]],
+      [[0, 0, 0], [0, 0, 6], [6, 6, 6]],
+      [[6, 0, 0], [6, 0, 0], [6, 6, 0]]],
+    color: 'blue'
+  },
+  {
+    name: 7,
+    pattern:
+      [[[0, 0, 0, 0], [7, 7, 7, 7], [0, 0, 0, 0], [0, 0, 0, 0]],
+      [[0, 0, 7, 0], [0, 0, 7, 0], [0, 0, 7, 0], [0, 0, 7, 0]],
+      [[0, 0, 0, 0], [0, 0, 0, 0], [7, 7, 7, 7], [0, 0, 0, 0]],
+      [[0, 7, 0, 0], [0, 7, 0, 0], [0, 7, 0, 0], [0, 7, 0, 0]]],
+    color: 'red'
+  }
+]
+
+
 class TetrisModel {
   constructor() {
     this.model = Array.from({ length: 20 }, () =>
@@ -6,72 +74,6 @@ class TetrisModel {
     this.block = null;
     this.currentShapeIndex = 0;
     this.score = 0;
-    this.shape = [
-      { name: 0, color: 'white' },
-      {
-        name: 1,
-        pattern:
-          [[[0, 1, 1], [0, 1, 1], [0, 0, 0]],
-          [[0, 1, 1], [0, 1, 1], [0, 0, 0]],
-          [[0, 1, 1], [0, 1, 1], [0, 0, 0]],
-          [[0, 1, 1], [0, 1, 1], [0, 0, 0]]],
-        color: 'yellow'
-      },
-      {
-        name: 2,
-        pattern:
-          [[[0, 2, 0], [2, 2, 2], [0, 0, 0]],
-          [[0, 2, 0], [0, 2, 2], [0, 2, 0]],
-          [[0, 0, 0], [2, 2, 2], [0, 2, 0]],
-          [[0, 2, 0], [2, 2, 0], [0, 2, 0]]],
-        color: 'pink'
-      },
-      {
-        name: 3,
-        pattern:
-          [[[3, 3, 0], [0, 3, 3], [0, 0, 0]],
-          [[0, 0, 3], [0, 3, 3], [0, 3, 0]],
-          [[3, 3, 0], [0, 3, 3], [0, 0, 0]],
-          [[0, 0, 3], [0, 3, 3], [0, 3, 0]]],
-        color: 'greenyellow'
-      },
-      {
-        name: 4,
-        pattern:
-          [[[0, 4, 4], [4, 4, 0], [0, 0, 0]],
-          [[0, 4, 0], [0, 4, 4], [0, 0, 4]],
-          [[0, 4, 4], [4, 4, 0], [0, 0, 0]],
-          [[0, 4, 0], [0, 4, 4], [0, 0, 4]]],
-        color: 'coral'
-      },
-      {
-        name: 5,
-        pattern:
-          [[[5, 5, 5], [0, 0, 5], [0, 0, 0]],
-          [[0, 0, 5], [0, 0, 5], [0, 5, 5]],
-          [[0, 0, 0], [5, 0, 0], [5, 5, 5]],
-          [[5, 5, 0], [5, 0, 0], [5, 0, 0]]],
-        color: 'purple'
-      },
-      {
-        name: 6,
-        pattern:
-          [[[6, 6, 6], [6, 0, 0], [0, 0, 0]],
-          [[0, 6, 6], [0, 0, 6], [0, 0, 6]],
-          [[0, 0, 0], [0, 0, 6], [6, 6, 6]],
-          [[6, 0, 0], [6, 0, 0], [6, 6, 0]]],
-        color: 'blue'
-      },
-      {
-        name: 7,
-        pattern:
-          [[[0, 0, 0, 0], [7, 7, 7, 7], [0, 0, 0, 0], [0, 0, 0, 0]],
-          [[0, 0, 7, 0], [0, 0, 7, 0], [0, 0, 7, 0], [0, 0, 7, 0]],
-          [[0, 0, 0, 0], [0, 0, 0, 0], [7, 7, 7, 7], [0, 0, 0, 0]],
-          [[0, 7, 0, 0], [0, 7, 0, 0], [0, 7, 0, 0], [0, 7, 0, 0]]],
-        color: 'red'
-      }
-    ]
   }
 
   run() {
@@ -82,7 +84,7 @@ class TetrisModel {
   }
 
   createBlock() {
-    const block = this.shape[Math.ceil(Math.random() * 7)].pattern;
+    const block = tetrisShape[Math.ceil(Math.random() * 7)].pattern;
     return block;
   }
 
@@ -192,7 +194,6 @@ class RenderView {
     this.gameStopButton = gameStopButton;
     this.timeClear = null;
     this.timer = 1000;
-    this.initEvent();
   }
 
   initEvent(){
@@ -213,7 +214,7 @@ class RenderView {
   renderingFromModel() {
     const template = `<table>` + this.tetrisModel.getModel().map((tr) =>
       `<tr>
-     ${tr.map((td) => `<td class="${(this.tetrisModel.shape[Math.abs(td)]).color}"></td>`).join('')}
+     ${tr.map((td) => `<td class="${(tetrisShape[Math.abs(td)]).color}"></td>`).join('')}
       </tr>`
     ).join('') + `</table>`;
     this.gameView.innerHTML = template;
@@ -242,8 +243,6 @@ class RenderView {
     clearTimeout(this.timeClear);
     event.target.replaceWith(this.gameStartButton);
   }
-
-
 }
 
 class ArrowKeysEventController {
@@ -387,8 +386,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameStopButton = document.querySelector('.game_stop');
   const scoreBox = document.querySelector('.score');
   const renderView = new RenderView({ tetrisModel, gameView, gameStartButton, gameStopButton, scoreBox });
-  const arrowKeysEventController = new ArrowKeysEventController({ tetrisModel, renderView })
-
+  const arrowKeysEventController = new ArrowKeysEventController({ tetrisModel, renderView });
+  renderView.initEvent();
   arrowKeysEventController.initEvent();
 
 })
