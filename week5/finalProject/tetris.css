@@ -1,11 +1,10 @@
 .container {
-  margin-top: 40px;
+  display: flex;
 }
 
 .game_view {
   width: 400px;
   height: 801px;
-  margin: auto;
   border: 2px solid gray;
 }
 
@@ -19,6 +18,18 @@
   height: 39px;
   padding: 0;
   border: 1px solid rgb(53, 53, 53);
+}
+
+.score_box{
+  position: relative;
+  display: grid;
+  height:100px;
+  left: 50px;
+  top: 50px;
+  font-size: 20px;
+}
+.score{
+  font-size: 30px;
 }
 
 .game_view td.white {
@@ -54,8 +65,7 @@
 }
 
 .button_box {
-  margin-top: 25px;
-  text-align: center;
+  margin: 20px 80px;
 }
 
 .game_stop {

@@ -5,6 +5,7 @@ class TetrisModel {
     this.currentTopLeft = [0, 3];
     this.block = null;
     this.currentShapeIndex = 0;
+    this.score = 0;
     this.shape = [
       { name: 0, color: 'white' },
       {
@@ -151,18 +152,29 @@ class TetrisModel {
     fullRows.forEach(ele => {
       this.model.splice(ele, 1);
       this.model.unshift(Array.from({ length: 10 }, () => 0));
+      this.updateScore();
     })
   }
 
-  checkRows() {
+  checkRows() { //게임 오버 판단
     if (this.model[4][3] < 0 || this.model[4][4] < 0 || this.model[4][5] < 0) {
       if (this.model[3][3] !== 0 || this.model[3][4] !== 0 || this.model[3][5] !== 0) {
         if (this.model[2][3] !== 0 || this.model[2][4] !== 0 || this.model[2][5] !== 0) {
           return true;
         }
       }
+      if (this.block[0].length === 4) {
+        return true;
+      }
     }
     return false;
+  }
+
+  updateScore() {
+    this.score *= 2;
+    if(this.score === 0){
+      this.score = 2;
+    }
   }
 
   getModel() {
@@ -171,10 +183,11 @@ class TetrisModel {
 }
 
 class RenderView {
-  constructor({ tetrisModel, gameView, gameStartButton, gameStopButton }) {
+  constructor({ tetrisModel, gameView, gameStartButton, gameStopButton, scoreBox}) {
     this.tetrisModel = tetrisModel;
     this.tetrisModel.run();
     this.gameView = gameView;
+    this.scoreBox = scoreBox;
     this.gameStartButton = gameStartButton.addEventListener('click', () => this.run());
     this.gameStopButton = gameStopButton.addEventListener('click', () => clearTimeout(this.timeClear));
     this.timeClear = null;
@@ -207,6 +220,7 @@ class RenderView {
       alert('game over');
     };
     this.down();
+    this.scoreBox.innerHTML = this.tetrisModel.score;
   }
 }
 
@@ -222,7 +236,7 @@ class ArrowKeysEventController {
     document.addEventListener('keydown', this.downHandler);
   }
 
-  moveLeftAndRightHandler = (event) => {
+  moveLeftAndRightHandler = (event) => { //왼쪽 오른쪽으로 움직이기
     const left = -1;
     const right = 1;
     let way = 0;
@@ -286,7 +300,7 @@ class ArrowKeysEventController {
   }
 
 
-  turnHandler = (event) => {
+  turnHandler = (event) => { // 도형 회전
     if (event.code === 'ArrowUp') {
       let isTurnOk = true;
       let currentShapeIndex = this.tetrisModel.currentShapeIndex;
@@ -314,10 +328,10 @@ class ArrowKeysEventController {
             if (!this.tetrisModel.model[i]) continue;
             let nextBlockShapeCell = nextBlockShape[i - this.tetrisModel.currentTopLeft[0]][j - this.tetrisModel.currentTopLeft[1]];
             if (nextBlockShapeCell !== 0 && this.tetrisModel.model[i][j] === 0) {
-              // 다음 모양은 있는데 현재 칸이 없으면
+              // 다음 모양은 색깔이 있는데 현재칸이 데이터 및 색깔이 없으면
               this.tetrisModel.model[i][j] = this.tetrisModel.block[1][1][2]; //데이터 및 색깔 부여
             } else if (nextBlockShapeCell === 0 && this.tetrisModel.model[i][j] && this.tetrisModel.model[i][j] >= 0) {
-              // 다음 모양은 없는데  현재 칸이 있으면
+              // 다음 모양은 색깔이 없는데 현재칸이 데이터 및 색깔이 있으면
               this.tetrisModel.model[i][j] = 0;
             }
           }
@@ -328,7 +342,7 @@ class ArrowKeysEventController {
     }
   }
 
-  downHandler = (event) => {
+  downHandler = (event) => { //도형 내리기
     switch (event.code) {
       case 'ArrowDown': {
         this.renderView.down();
@@ -349,11 +363,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameView = document.querySelector('.game_view');
   const gameStartButton = document.querySelector('.start_game');
   const gameStopButton = document.querySelector('.game_stop');
-  const renderView = new RenderView({ tetrisModel, gameView, gameStartButton, gameStopButton });
+  const scoreBox = document.querySelector('.score');
+  const renderView = new RenderView({ tetrisModel, gameView, gameStartButton, gameStopButton, scoreBox });
   const arrowKeysEventController = new ArrowKeysEventController({ tetrisModel, renderView })
-  // tetrisModel.run();
-  // renderView.run();
+
   arrowKeysEventController.initEvent();
 
-  document.querySelector('.game_stop').addEventListener('click', () => clearTimeout(renderView.timeClear))
 })
